@@ -223,6 +223,25 @@ Edit those files to change copy — no markup changes needed.
 
 ---
 
+## 9b. Lead capture & seller page
+
+- **`components/forms/SellerLeadForm.tsx`** — reusable, controlled seller
+  lead-capture form (frosted glass: `bg-white/85 backdrop-blur-md`, border,
+  shadow, rounded). Fields: first/last name, phone, email, property address,
+  "how soon to sell" select, optional message. On submit it builds a typed
+  `SellerLead` object, `console.log`s it, and shows an inline success state.
+  **No backend yet** — a `TODO` marks where to POST to an API/DB. Optional `id`
+  prop for an anchor target. Used in the homepage hero (right column) and the
+  seller page hero — single source, no duplication.
+- **`app/sell-your-home/page.tsx`** — `/sell-your-home` landing page (server
+  component with its own metadata): hero with the lead form, value cards
+  (reuses `ValueCard`), a 4-step "how selling works" section, and a final CTA
+  banner. Footer reused.
+- **Navbar** now includes **Sell Your Home** → `/sell-your-home`. Homepage
+  anchors are page-absolute (`/#about`, etc.) so they work from any route, and
+  the desktop/mobile breakpoint moved to `lg` (room for the larger logo + extra
+  link).
+
 ## 10. Key files to know
 
 - `app/page.tsx` — section order and composition.

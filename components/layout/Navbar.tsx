@@ -7,12 +7,14 @@ import { Menu, X } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
+// Homepage anchors are page-absolute (/#...) so they work from any route.
 const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Agent", href: "#agent" },
-  { label: "Blog", href: "#blog" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/#home" },
+  { label: "About", href: "/#about" },
+  { label: "Sell Your Home", href: "/sell-your-home" },
+  { label: "Agent", href: "/#agent" },
+  { label: "Blog", href: "/#blog" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export default function Navbar() {
@@ -44,7 +46,7 @@ export default function Navbar() {
       <nav className="mx-auto flex max-w-8xl items-center justify-between px-6 py-4 lg:px-10 lg:py-5">
         {/* Logo — white/monochrome treatment for the dark, transparent header */}
         <Link
-          href="#home"
+          href="/#home"
           className="flex items-center"
           onClick={() => setOpen(false)}
           aria-label="Royal Home Solutions, Inc. — home"
@@ -60,7 +62,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden items-center gap-8 md:flex">
+        <ul className="hidden items-center gap-7 lg:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
               <Link
@@ -73,8 +75,8 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <div className="hidden md:block">
-          <Button href="#listings" variant="white" withArrow>
+        <div className="hidden lg:block">
+          <Button href="/#listings" variant="white" withArrow>
             Explore Property
           </Button>
         </div>
@@ -82,7 +84,7 @@ export default function Navbar() {
         {/* Mobile toggle */}
         <button
           type="button"
-          className="text-white md:hidden"
+          className="text-white lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -94,8 +96,8 @@ export default function Navbar() {
       {/* Mobile menu */}
       <div
         className={cn(
-          "overflow-hidden bg-brand-ink/95 backdrop-blur-md transition-[max-height] duration-300 md:hidden",
-          open ? "max-h-96" : "max-h-0"
+          "overflow-hidden bg-brand-ink/95 backdrop-blur-md transition-[max-height] duration-300 lg:hidden",
+          open ? "max-h-[28rem]" : "max-h-0"
         )}
       >
         <ul className="flex flex-col gap-1 px-6 pb-6 pt-2">
@@ -112,7 +114,7 @@ export default function Navbar() {
           ))}
           <li className="mt-3">
             <Button
-              href="#listings"
+              href="/#listings"
               variant="yellow"
               withArrow
               className="w-full"

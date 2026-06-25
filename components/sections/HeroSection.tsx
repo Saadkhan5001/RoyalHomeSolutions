@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import Button from "@/components/ui/Button";
+import SellerLeadForm from "@/components/forms/SellerLeadForm";
 
 // Decorative avatar images for the trust badge.
 const avatars = [
@@ -16,7 +17,7 @@ export default function HeroSection() {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-end overflow-hidden"
+      className="relative flex min-h-screen items-center overflow-hidden"
     >
       {/* Background image */}
       <Image
@@ -34,7 +35,7 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto w-full max-w-8xl px-6 pb-20 pt-32 lg:px-10 lg:pb-28">
+      <div className="relative z-10 mx-auto grid w-full max-w-8xl items-center gap-12 px-6 pb-16 pt-32 lg:grid-cols-2 lg:gap-10 lg:px-10 lg:pb-24 lg:pt-40">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,7 +76,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <h1 className="text-5xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
+          <h1 className="text-5xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
             Where Everyone is Treated Like Royalty
           </h1>
 
@@ -89,6 +90,16 @@ export default function HeroSection() {
               Explore Property
             </Button>
           </div>
+        </motion.div>
+
+        {/* Seller lead-capture form */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
+          className="w-full lg:ml-auto lg:max-w-md"
+        >
+          <SellerLeadForm variant="hero" />
         </motion.div>
       </div>
     </section>
