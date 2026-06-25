@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X, Mountain } from "lucide-react";
+import Image from "next/image";
+import { Menu, X } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
@@ -40,15 +41,22 @@ export default function Navbar() {
         scrolled ? "bg-brand-ink/90 backdrop-blur-md" : "bg-transparent"
       )}
     >
-      <nav className="mx-auto flex max-w-8xl items-center justify-between px-6 py-5 lg:px-10">
-        {/* Logo */}
+      <nav className="mx-auto flex max-w-8xl items-center justify-between px-6 py-4 lg:px-10 lg:py-5">
+        {/* Logo — white/monochrome treatment for the dark, transparent header */}
         <Link
           href="#home"
-          className="flex items-center gap-2 text-xl font-bold text-white"
+          className="flex items-center"
           onClick={() => setOpen(false)}
+          aria-label="Royal Home Solutions, Inc. — home"
         >
-          <Mountain className="h-6 w-6" aria-hidden="true" />
-          Homstar
+          <Image
+            src="/Assets/Images/Logo-mark.png"
+            alt="Royal Home Solutions, Inc."
+            width={405}
+            height={195}
+            priority
+            className="h-14 w-auto brightness-0 invert sm:h-16"
+          />
         </Link>
 
         {/* Desktop nav */}

@@ -9,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Homstar — Find your dream home with Havenly",
+  title: "Royal Home Solutions, Inc. — Find your dream home",
   description:
-    "Explore top property listings, get expert guidance, and make your dream home a reality with Homstar.",
+    "Explore top property listings, get expert guidance, and make your dream home a reality with Royal Home Solutions, Inc. Where everyone is treated like royalty.",
 };
 
 export default function RootLayout({

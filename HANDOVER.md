@@ -1,4 +1,4 @@
-# Homstar — Project Handover
+# Royal Home Solutions — Project Handover
 
 Real-estate landing page recreating the Framer "Havenly" template, rebuilt as a
 clean, production-ready Next.js app. This document reflects the project's status
@@ -122,7 +122,7 @@ public/
    home today!", yellow CTA.
 10. **Footer** (`Footer`) — brand + contact, Landings / Information columns,
     working newsletter form (controlled input + success state), social icons,
-    Homstar copyright.
+    Royal Home Solutions copyright.
 
 ---
 
@@ -180,9 +180,24 @@ Intentional fixes applied (consistent with the "fix obvious errors" request):
 - Duplicate "Market comparison" value card → second renamed **"Risk insights"**
   (its copy is about seismic/flood risk).
 - Footer: removed the "Made in Framer" badge and "Template by Themeflow · Powered
-  by Framer" credit; uses a Homstar copyright and `hello@homstar.com`.
+  by Framer" credit; uses a Royal Home Solutions copyright and
+  `hello@royalhomesolutions.com`.
 - Added a 4th buying-process slide ("Buy back with confidence") so all four
   timeline steps map 1:1 to slides.
+
+### Branding
+- The brand is **Royal Home Solutions, Inc.** The logo
+  (`public/Assets/Images/Logo.png`, transparent RGBA) is used in two treatments:
+  - **Navbar** (transparent header over the dark hero): rendered as a clean
+    white/monochrome mark via Tailwind `brightness-0 invert` — no background box.
+  - **Footer** (white background): the original full-color logo, directly placed.
+  Use the **full-color** logo only on light/white backgrounds; use the
+  **white/inverted** treatment on dark backgrounds. Copyright and page metadata
+  use the company name. The old placeholder text-mark has been removed.
+- Headlines/marketing copy still reference "Havenly" (from the original template
+  screenshots) — update in the section components / `data` if a full copy rebrand
+  is wanted. The contact email `hello@royalhomesolutions.com` in the footer is a
+  placeholder and should be replaced with the real address.
 
 ### Images
 - **Hero** uses the local `public/Assets/Images/Hero-background.jpeg`.

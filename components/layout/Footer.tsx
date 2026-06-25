@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
-  Mountain,
   ArrowRight,
   Facebook,
   Instagram,
@@ -52,20 +52,26 @@ export default function Footer() {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href="#home"
-            className="flex items-center gap-2 text-xl font-bold text-brand-ink"
+            className="inline-flex items-center"
+            aria-label="Royal Home Solutions, Inc. — home"
           >
-            <Mountain className="h-6 w-6" aria-hidden="true" />
-            Homstar
+            <Image
+              src="/Assets/Images/Logo-mark.png"
+              alt="Royal Home Solutions, Inc."
+              width={405}
+              height={195}
+              className="h-16 w-auto"
+            />
           </Link>
 
           <div className="flex flex-col gap-2 text-sm sm:flex-row sm:gap-8">
             <p className="text-neutral-500">
               <span className="font-semibold text-brand-ink">Contact Us</span>{" "}
               <a
-                href="mailto:hello@homstar.com"
+                href="mailto:hello@royalhomesolutions.com"
                 className="transition-colors hover:text-brand-ink"
               >
-                hello@homstar.com
+                hello@royalhomesolutions.com
               </a>
             </p>
             <p className="text-neutral-500">
@@ -165,7 +171,8 @@ export default function Footer() {
         <hr className="my-10 border-neutral-100" />
 
         <p className="text-center text-sm text-neutral-500">
-          &copy; {new Date().getFullYear()} Homstar. All rights reserved.
+          &copy; {new Date().getFullYear()} Royal Home Solutions, Inc. All rights
+          reserved.
         </p>
       </div>
     </footer>
