@@ -50,12 +50,12 @@ export default function Navbar() {
           aria-label="Royal Home Solutions, Inc. — home"
         >
           <Image
-            src="/Assets/Images/Logo-mark.png"
+            src="/Assets/Images/Logo-cropped.png"
             alt="Royal Home Solutions, Inc."
-            width={405}
-            height={195}
+            width={403}
+            height={175}
             priority
-            className="h-14 w-auto brightness-0 invert sm:h-16"
+            className="h-16 w-auto brightness-0 invert sm:h-20"
           />
         </Link>
 

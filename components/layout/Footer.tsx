@@ -56,11 +56,11 @@ export default function Footer() {
             aria-label="Royal Home Solutions, Inc. — home"
           >
             <Image
-              src="/Assets/Images/Logo-mark.png"
+              src="/Assets/Images/Logo-cropped.png"
               alt="Royal Home Solutions, Inc."
-              width={405}
-              height={195}
-              className="h-16 w-auto"
+              width={403}
+              height={175}
+              className="h-20 w-auto"
             />
           </Link>
 

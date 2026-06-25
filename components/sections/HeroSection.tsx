@@ -76,7 +76,7 @@ export default function HeroSection() {
           </div>
 
           <h1 className="text-5xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            Find your dream home with Havenly
+            Where Everyone is Treated Like Royalty
           </h1>
 
           <p className="mt-6 max-w-md text-base leading-relaxed text-white/85 sm:text-lg">
