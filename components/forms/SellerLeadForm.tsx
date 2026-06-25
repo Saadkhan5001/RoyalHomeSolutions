@@ -28,6 +28,15 @@ const emptyLead: SellerLead = {
 
 const timelineOptions = ["ASAP", "1–3 months", "3–6 months", "Just exploring"];
 
+/** Formats a US phone number as the user types: (000) 000-0000. */
+function formatPhone(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 10);
+  if (digits.length === 0) return "";
+  if (digits.length < 4) return `(${digits}`;
+  if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
 type Variant = "hero" | "page";
 
 interface SellerLeadFormProps {
@@ -56,7 +65,7 @@ const variantStyles: Record<
   }
 > = {
   hero: {
-    card: "border border-white/15 bg-neutral-950/45 shadow-xl backdrop-blur-xl",
+    card: "border border-white/15 bg-neutral-950/30 shadow-xl backdrop-blur-xl",
     heading: "text-white",
     sub: "text-white/70",
     input:
@@ -227,11 +236,18 @@ export default function SellerLeadForm({
                 id="phone"
                 name="phone"
                 type="tel"
+                inputMode="numeric"
                 required
                 autoComplete="tel"
-                placeholder="Phone *"
+                maxLength={14}
+                placeholder="(000) 000-0000"
                 value={data.phone}
-                onChange={update("phone")}
+                onChange={(e) =>
+                  setData((prev) => ({
+                    ...prev,
+                    phone: formatPhone(e.target.value),
+                  }))
+                }
                 className={inputClasses}
               />
             </div>

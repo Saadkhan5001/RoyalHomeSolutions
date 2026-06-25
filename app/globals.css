@@ -7,8 +7,19 @@
   --foreground: #0d0d0d;
 }
 
+/* Native smooth scrolling — used as the fallback for anchor links and when
+   Lenis is disabled (e.g. prefers-reduced-motion). */
 html {
   scroll-behavior: smooth;
+  /* Reserve the scrollbar gutter so locking body scroll (mobile menu) doesn't
+     shift the layout. */
+  scrollbar-gutter: stable;
+}
+
+/* While Lenis is active it drives scrolling per-frame, so native smooth
+   behavior must be turned off to avoid fighting it. */
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
 }
 
 body {
