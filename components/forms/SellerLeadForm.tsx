@@ -102,7 +102,7 @@ export default function SellerLeadForm({
   const s = variantStyles[variant];
   const inputClasses = cn(
     "w-full min-w-0 rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors",
-    s.input
+    s.input,
   );
 
   const [data, setData] = useState<SellerLead>(emptyLead);
@@ -113,7 +113,7 @@ export default function SellerLeadForm({
     (
       e: React.ChangeEvent<
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-      >
+      >,
     ) =>
       setData((prev) => ({ ...prev, [field]: e.target.value }));
 
@@ -146,24 +146,19 @@ export default function SellerLeadForm({
         </span>
       )}
 
-      <h2
-        className={cn(
-          "text-2xl font-semibold tracking-tight",
-          s.heading
-        )}
-      >
-        Need to sell your home quickly?
+      <h2 className={cn("text-2xl font-semibold tracking-tight", s.heading)}>
+        Want to sell your home quickly?
       </h2>
       <p className={cn("mt-2 text-sm leading-relaxed", s.sub)}>
         Tell us a little about your property and our team will get back to you
-        with the next step.
+        with the next steps.
       </p>
 
       {submitted ? (
         <div
           className={cn(
             "mt-6 flex items-start gap-3 rounded-2xl border p-5",
-            s.success
+            s.success,
           )}
         >
           <CheckCircle2
@@ -183,7 +178,7 @@ export default function SellerLeadForm({
               onClick={() => setSubmitted(false)}
               className={cn(
                 "mt-3 text-sm font-semibold underline underline-offset-4 hover:no-underline",
-                s.secondaryBtn
+                s.secondaryBtn,
               )}
             >
               Submit another property
@@ -296,7 +291,10 @@ export default function SellerLeadForm({
               required
               value={data.timeline}
               onChange={update("timeline")}
-              className={cn(inputClasses, data.timeline === "" && s.placeholder)}
+              className={cn(
+                inputClasses,
+                data.timeline === "" && s.placeholder,
+              )}
             >
               <option value="" disabled>
                 How soon are you looking to sell? *
@@ -331,7 +329,7 @@ export default function SellerLeadForm({
           <p
             className={cn(
               "flex items-center justify-center gap-2 text-xs",
-              s.privacy
+              s.privacy,
             )}
           >
             <Lock className={cn("h-3.5 w-3.5", s.lock)} aria-hidden="true" />
