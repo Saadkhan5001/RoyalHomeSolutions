@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Lock, CheckCircle2 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { trackLead } from "@/lib/metaPixel";
 import { cn } from "@/lib/utils";
 
 /** Shape of a captured seller lead. Ready to POST to an API later. */
@@ -130,6 +131,12 @@ export default function SellerLeadForm({
     //     body: JSON.stringify(lead),
     //   });
     console.log("Seller lead submitted:", lead);
+
+    // Meta Pixel: standard Lead event, fired only once the submit succeeds.
+    // TODO: When the API call above replaces the console.log, move this inside
+    // the success branch and mirror it with the Conversions API (server-side)
+    // using a shared event_id for deduplication.
+    trackLead();
 
     setSubmitted(true);
     setData(emptyLead);

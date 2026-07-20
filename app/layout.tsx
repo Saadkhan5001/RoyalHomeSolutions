@@ -3,6 +3,9 @@ import { Inter } from "next/font/google";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
+import MetaPixelProvider from "@/components/providers/MetaPixelProvider";
+
+const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,6 +27,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="overflow-x-hidden font-sans antialiased">
+        <MetaPixelProvider />
+        {metaPixelId && (
+          <noscript>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              height="1"
+              width="1"
+              style={{ display: "none" }}
+              alt=""
+              src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
+            />
+          </noscript>
+        )}
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>
