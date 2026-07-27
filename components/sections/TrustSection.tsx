@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { trustStats, galleryImages } from "@/data/whyChoose";
+import { Check } from "lucide-react";
+import { trustBadges, galleryImages } from "@/data/whyChoose";
 
 export default function TrustSection() {
   const reduceMotion = useReducedMotion();
@@ -20,7 +21,7 @@ export default function TrustSection() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="text-3xl font-semibold leading-tight tracking-tight text-brand-ink sm:text-4xl lg:text-5xl"
           >
-            Built on trust &amp; focused on your future
+            Built on trust. Focused on homeowners.
           </motion.h2>
 
           <motion.div
@@ -30,26 +31,29 @@ export default function TrustSection() {
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
           >
             <p className="text-base leading-relaxed text-neutral-600 sm:text-lg">
-              Built on trust and dedicated to your future, we guide you through
-              every step of your real estate journey. Experience reliable
-              service, honest advice, and lasting value with every property.
+              Selling a home can feel overwhelming. Royal Home Solutions gives
+              homeowners a simpler path forward with honest guidance, clear
+              communication, and flexible options based on their situation.
             </p>
 
-            <dl className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
-              {trustStats.map((stat) => (
-                <div key={stat.id}>
-                  <dt className="sr-only">{stat.label}</dt>
-                  <dd>
-                    <span className="block text-3xl font-bold text-brand-green">
-                      {stat.value}
-                    </span>
-                    <span className="mt-1 block text-sm text-neutral-500">
-                      {stat.label}
-                    </span>
-                  </dd>
-                </div>
+            <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {trustBadges.map((badge) => (
+                <li
+                  key={badge.id}
+                  className="flex items-center gap-3 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3"
+                >
+                  <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-brand-green">
+                    <Check
+                      className="h-4 w-4 text-white"
+                      aria-hidden="true"
+                    />
+                  </span>
+                  <span className="text-sm font-semibold text-brand-ink">
+                    {badge.label}
+                  </span>
+                </li>
               ))}
-            </dl>
+            </ul>
           </motion.div>
         </div>
       </div>

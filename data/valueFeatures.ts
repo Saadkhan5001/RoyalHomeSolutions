@@ -1,4 +1,10 @@
-import { GraduationCap, Bus, Tag, Activity, type LucideIcon } from "lucide-react";
+import {
+  Wrench,
+  Percent,
+  MessageSquare,
+  CalendarClock,
+  type LucideIcon,
+} from "lucide-react";
 
 export interface ValueFeature {
   id: string;
@@ -10,36 +16,36 @@ export interface ValueFeature {
 /** Feature cards rendered in the left column of the value grid. */
 export const valueFeaturesLeft: ValueFeature[] = [
   {
-    id: "schools",
-    title: "Schools",
+    id: "no-repairs",
+    title: "No Repairs",
     description:
-      "Find homes in top-rated school districts by filtering listings to ensure the best education opportunities for your family.",
-    icon: GraduationCap,
+      "Sell your home exactly as it is today. No fixing, cleaning, or updating before you reach out.",
+    icon: Wrench,
   },
   {
-    id: "public-transport",
-    title: "Public transport",
+    id: "no-commissions",
+    title: "No Agent Commissions",
     description:
-      "Find homes with excellent public transit access for a convenient, connected, and hassle-free commute.",
-    icon: Bus,
+      "Work directly with our team and keep more of your proceeds — no listing agent fees or commissions.",
+    icon: Percent,
   },
 ];
 
 /** Feature cards rendered in the right column of the value grid. */
 export const valueFeaturesRight: ValueFeature[] = [
   {
-    id: "market-comparison",
-    title: "Market comparison",
+    id: "clear-communication",
+    title: "Fast, Clear Communication",
     description:
-      "Find homes by filtering for bidding wars and recent market price updates to make informed buying decisions easily.",
-    icon: Tag,
+      "Honest answers and quick responses at every step, so you always know exactly what comes next.",
+    icon: MessageSquare,
   },
   {
-    id: "risk-insights",
-    title: "Risk insights",
+    id: "flexible-closing",
+    title: "Flexible Closing",
     description:
-      "Filter homes by seismic risks, flood risks, and more to find a safe and secure property effortlessly.",
-    icon: Activity,
+      "Close on the timeline that fits your life — move quickly or take the time you need.",
+    icon: CalendarClock,
   },
 ];
 
@@ -53,17 +59,17 @@ export interface ValueImage {
 export const valueImages: ValueImage[] = [
   {
     id: "v1",
-    src: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-    alt: "White modern home on a hillside street",
+    src: "https://images.unsplash.com/photo-1605146769289-440113cc3d00?auto=format&fit=crop&w=1000&q=85",
+    alt: "Modern home glowing warmly at twilight",
   },
   {
     id: "v2",
-    src: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80",
-    alt: "Bright multi-storey residence under a clear blue sky",
+    src: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85",
+    alt: "Bright, comfortable open-plan living room",
   },
   {
     id: "v3",
-    src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    alt: "Contemporary house with glass façade and landscaping",
+    src: "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?auto=format&fit=crop&w=1000&q=85",
+    alt: "Lakeview home glowing at sunset",
   },
 ];

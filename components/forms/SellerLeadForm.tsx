@@ -46,6 +46,15 @@ interface SellerLeadFormProps {
   /** "hero" = dark frosted glass for use over imagery; "page" = light card. */
   variant?: Variant;
   className?: string;
+  /** Overridable copy so the same form can be reused across pages. */
+  heading?: string;
+  subheading?: string;
+  submitLabel?: string;
+  /** Small pill shown above the heading on the hero variant. */
+  eyebrow?: string;
+  /** Where the lead came from, attached to the submitted payload for later
+   * attribution (e.g. "sell_your_home_page"). */
+  source?: string;
 }
 
 /** Per-variant class tokens so the markup stays single-source. */
@@ -99,10 +108,17 @@ export default function SellerLeadForm({
   id,
   variant = "page",
   className,
+  heading = "Want to sell your home quickly?",
+  subheading = "Share a few details and our team will contact you with the next step.",
+  submitLabel = "Get My Free Cash Offer",
+  eyebrow = "Free Cash Offer",
+  source,
 }: SellerLeadFormProps) {
   const s = variantStyles[variant];
+  // text-base (16px) keeps iOS from auto-zooming on focus; roomy padding keeps
+  // inputs comfortably tappable on mobile ad traffic.
   const inputClasses = cn(
-    "w-full min-w-0 rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors",
+    "w-full min-w-0 rounded-xl border px-4 py-3 text-base outline-none transition-colors",
     s.input,
   );
 
@@ -121,8 +137,9 @@ export default function SellerLeadForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Format the submitted data into a clean object for later use.
-    const lead: SellerLead = { ...data };
+    // Format the submitted data into a clean object for later use. `source`
+    // tags which page/entry point captured the lead for later attribution.
+    const lead = { ...data, source };
 
     // TODO: Replace this with a real API/database call, e.g.
     //   await fetch("/api/seller-leads", {
@@ -149,17 +166,14 @@ export default function SellerLeadForm({
     >
       {variant === "hero" && (
         <span className="mb-3 inline-flex items-center rounded-full border border-brand-yellow/40 bg-brand-yellow/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand-yellow">
-          Free Home Review
+          {eyebrow}
         </span>
       )}
 
       <h2 className={cn("text-2xl font-semibold tracking-tight", s.heading)}>
-        Want to sell your home quickly?
+        {heading}
       </h2>
-      <p className={cn("mt-2 text-sm leading-relaxed", s.sub)}>
-        Tell us a little about your property and our team will get back to you
-        with the next steps.
-      </p>
+      <p className={cn("mt-2 text-sm leading-relaxed", s.sub)}>{subheading}</p>
 
       {submitted ? (
         <div
@@ -330,7 +344,7 @@ export default function SellerLeadForm({
           </div>
 
           <Button type="submit" variant="yellow" withArrow className="w-full">
-            Get My Free Home Review
+            {submitLabel}
           </Button>
 
           <p

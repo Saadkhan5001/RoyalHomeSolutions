@@ -12,19 +12,17 @@ import {
 } from "lucide-react";
 
 const landingsLinks = [
-  { label: "Homepage", href: "#home" },
-  { label: "About us", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "Homepage", href: "/#home" },
+  { label: "How It Works", href: "/#process" },
+  { label: "About Us", href: "/#about" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 const informationLinks = [
-  { label: "Property", href: "#listings" },
-  { label: "Property Details", href: "#listings" },
-  { label: "Agent", href: "#agent" },
-  { label: "Agent Details", href: "#agent" },
-  { label: "Blog", href: "#blog" },
-  { label: "Blog Details", href: "#blog" },
-  { label: "404", href: "#" },
+  { label: "Sell Your Home", href: "/sell-your-home" },
+  { label: "Get a Cash Offer", href: "/sell-your-home#seller-form" },
+  { label: "Homeowners We Help", href: "/#situations" },
+  { label: "Resources", href: "/#blog" },
 ];
 
 const socials = [
@@ -120,10 +118,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-brand-ink">newsletter</h3>
+            <h3 className="text-sm font-semibold text-brand-ink">Newsletter</h3>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-neutral-500">
-              Subscribe to our newsletter for exclusive real estate updates,
-              tips, and market insights.
+              Subscribe for helpful tips on selling your home quickly, plus
+              homeowner resources and updates.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-5 flex max-w-sm gap-3">

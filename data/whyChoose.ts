@@ -1,4 +1,10 @@
-import { Users, Building2, Workflow, Crown, type LucideIcon } from "lucide-react";
+import {
+  BadgeDollarSign,
+  Home,
+  Workflow,
+  CalendarClock,
+  type LucideIcon,
+} from "lucide-react";
 
 export interface WhyChooseItem {
   id: string;
@@ -9,46 +15,49 @@ export interface WhyChooseItem {
 
 export const whyChooseItems: WhyChooseItem[] = [
   {
-    id: "expert-guidance",
-    title: "Expert Guidance",
+    id: "fair-cash-offer",
+    title: "Fair Cash Offer",
     description:
-      "Get personalized support from experienced real estate professionals to help you navigate the property market with confidence and clarity.",
-    icon: Users,
+      "We review your property and situation so you can understand your selling options clearly.",
+    icon: BadgeDollarSign,
   },
   {
-    id: "premium-selection",
-    title: "Premium Property Selection",
+    id: "sell-as-is",
+    title: "Sell As-Is",
     description:
-      "Explore carefully selected properties that match your lifestyle, investment goals, and budget in the most desirable locations.",
-    icon: Building2,
+      "No repairs, cleaning, or updates required before reaching out.",
+    icon: Home,
   },
   {
-    id: "stress-free-process",
-    title: "Stress-Free Process",
+    id: "simple-guided-process",
+    title: "Simple Guided Process",
     description:
-      "Stay ahead with the latest market trends, pricing insights, and neighborhood updates to make smarter property decisions.",
+      "Our team walks you through each step so you know what to expect.",
     icon: Workflow,
   },
   {
-    id: "proven-track-record",
-    title: "Proven Track Record",
+    id: "flexible-timeline",
+    title: "Flexible Timeline",
     description:
-      "Trust our years of experience and successful client relationships to deliver reliable real estate solutions and outstanding results.",
-    icon: Crown,
+      "Move forward on a timeline that works for your situation.",
+    icon: CalendarClock,
   },
 ];
 
-export interface TrustStat {
+/**
+ * Value badges shown in the Trust section. Deliberately no hard numbers —
+ * these are qualitative promises, not unverified stats.
+ */
+export interface TrustBadge {
   id: string;
-  value: string;
   label: string;
 }
 
-export const trustStats: TrustStat[] = [
-  { id: "units", value: "+112", label: "Unit Already" },
-  { id: "customers", value: "+17K", label: "Customer" },
-  { id: "satisfied", value: "99%", label: "Satisfied" },
-  { id: "reviews", value: "+41K", label: "Reviews" },
+export const trustBadges: TrustBadge[] = [
+  { id: "homeowners-helped", label: "Local Homeowners Helped" },
+  { id: "simple-process", label: "Simple Selling Process" },
+  { id: "no-repairs", label: "No Repairs Needed" },
+  { id: "flexible-closing", label: "Flexible Closing Options" },
 ];
 
 export interface GalleryImage {
@@ -60,27 +69,27 @@ export interface GalleryImage {
 export const galleryImages: GalleryImage[] = [
   {
     id: "g1",
-    src: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80",
-    alt: "Timber-clad modern home among greenery",
+    src: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=1200&q=85",
+    alt: "Bright modern family home with a manicured lawn",
   },
   {
     id: "g2",
-    src: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=900&q=80",
-    alt: "Family standing in front of a suburban house",
+    src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=85",
+    alt: "Classic white two-storey home with a welcoming porch",
   },
   {
     id: "g3",
-    src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80",
-    alt: "Single-storey glass house with landscaped steps",
+    src: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=85",
+    alt: "Contemporary home with a pool on a sunny day",
   },
   {
     id: "g4",
-    src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80",
-    alt: "Homeowner smiling beside a sunlit doorway",
+    src: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1200&q=85",
+    alt: "Modern home with large glass windows at dusk",
   },
   {
     id: "g5",
-    src: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80",
-    alt: "Contemporary villa with a manicured front garden",
+    src: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?auto=format&fit=crop&w=1200&q=85",
+    alt: "Suburban house with a landscaped front yard",
   },
 ];

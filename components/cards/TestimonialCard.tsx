@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { MapPin } from "lucide-react";
+import { Check } from "lucide-react";
 import StarRating from "@/components/ui/StarRating";
 import type { Testimonial } from "@/data/testimonials";
 
@@ -42,7 +42,7 @@ export default function TestimonialCard({ testimonial }: TestimonialCardProps) {
       <div className="mt-7 border-t border-neutral-200 pt-5">
         <p className="font-semibold text-brand-ink">{testimonial.propertyName}</p>
         <p className="mt-1 flex items-center gap-1.5 text-sm text-neutral-500">
-          <MapPin className="h-4 w-4 text-neutral-400" aria-hidden="true" />
+          <Check className="h-4 w-4 text-brand-green" aria-hidden="true" />
           {testimonial.propertyAddress}
         </p>
       </div>

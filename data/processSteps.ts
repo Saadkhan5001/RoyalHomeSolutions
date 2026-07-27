@@ -1,4 +1,10 @@
-import { Home, CalendarCheck, Wallet, BadgeCheck, type LucideIcon } from "lucide-react";
+import {
+  Home,
+  ClipboardCheck,
+  Scale,
+  CalendarCheck,
+  type LucideIcon,
+} from "lucide-react";
 
 export interface ProcessStep {
   id: string;
@@ -7,10 +13,10 @@ export interface ProcessStep {
 }
 
 export const processSteps: ProcessStep[] = [
-  { id: "discover", label: "Discover House", icon: Home },
-  { id: "schedule", label: "Schedule to Visit", icon: CalendarCheck },
-  { id: "purchase", label: "Hassle-Free Purchase", icon: Wallet },
-  { id: "buyback", label: "Buyback Guarantee", icon: BadgeCheck },
+  { id: "tell-us", label: "Tell Us About Your Property", icon: Home },
+  { id: "home-review", label: "Get a Free Home Review", icon: ClipboardCheck },
+  { id: "review-options", label: "Review Your Options", icon: Scale },
+  { id: "close", label: "Close on Your Timeline", icon: CalendarCheck },
 ];
 
 export interface ProcessSlide {
@@ -24,59 +30,59 @@ export interface ProcessSlide {
 
 export const processSlides: ProcessSlide[] = [
   {
-    id: "find-the-perfect-house",
-    heading: "Find the perfect house",
+    id: "start-a-conversation",
+    heading: "Start with a simple conversation",
     description:
-      "Find your perfect home with personalized searches, expert guidance, and seamless viewings—all tailored to your dream lifestyle and budget.",
+      "Tell us a little about your property and your situation. There's no obligation and no pressure — just a straightforward first step.",
     checklist: [
-      "Handpicked homes matching your needs",
-      "Expert guidance every step of the buying journey",
-      "Seamless process from search to closing",
+      "No obligation",
+      "No repairs required",
+      "Clear next steps from our team",
     ],
     image:
-      "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Advisor reviewing options with a client on a sofa",
+      "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=1400&q=85",
+    imageAlt: "Homeowner talking with an advisor at a kitchen table",
   },
   {
-    id: "schedule-with-confidence",
-    heading: "Schedule with confidence",
+    id: "get-a-free-home-review",
+    heading: "Get a free home review",
     description:
-      "Book viewings that fit your calendar and explore each property with a dedicated advisor who knows the neighbourhood inside out.",
+      "Our team reviews your property and situation, then walks you through what your options could look like — in plain language.",
     checklist: [
-      "Flexible viewing times that suit you",
-      "Local advisors with deep market insight",
-      "Honest answers to every question",
+      "Honest, no-pressure review",
+      "We buy houses as-is",
+      "Answers to all your questions",
     ],
     image:
-      "https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Two people discussing property paperwork at a table",
+      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=85",
+    imageAlt: "A team reviewing property details together at a table",
   },
   {
-    id: "close-without-stress",
-    heading: "Close without the stress",
+    id: "review-your-options",
+    heading: "Review your options",
     description:
-      "From the offer to the keys in your hand, we handle the details so your move stays smooth, transparent, and entirely on your terms.",
+      "Compare your paths forward with clear guidance. Choose what fits your goals — there's never any obligation to move ahead.",
     checklist: [
-      "Clear, transparent paperwork",
-      "Support through negotiation and closing",
-      "A hassle-free path from offer to ownership",
+      "Transparent, easy to understand",
+      "No hidden fees or commissions",
+      "You decide what's right for you",
     ],
     image:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "New homeowners standing in front of their house",
+      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1400&q=85",
+    imageAlt: "Person reviewing paperwork and comparing options",
   },
   {
-    id: "buy-back-with-confidence",
-    heading: "Buy back with confidence",
+    id: "close-on-your-timeline",
+    heading: "Close on your timeline",
     description:
-      "Change of plans? Our buyback guarantee lets you sell back with confidence, so your investment always stays protected.",
+      "Ready to move forward? We handle the details and close on the date that works for you — fast or flexible, your call.",
     checklist: [
-      "Protected investment from day one",
-      "Flexible buyback options that suit you",
-      "Lasting peace of mind after you move in",
+      "Flexible closing dates",
+      "We handle the details",
+      "Sell without the stress",
     ],
     image:
-      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Real estate advisor handing over house keys to a client",
+      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1400&q=85",
+    imageAlt: "Homeowner receiving keys after a smooth closing",
   },
 ];

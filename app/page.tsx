@@ -2,8 +2,8 @@ import Navbar from "@/components/layout/Navbar";
 import HeroSection from "@/components/sections/HeroSection";
 import TrustSection from "@/components/sections/TrustSection";
 import WhyChooseSection from "@/components/sections/WhyChooseSection";
-import PropertyListingsSection from "@/components/sections/PropertyListingsSection";
-import BuyingProcessSection from "@/components/sections/BuyingProcessSection";
+import SellerSituationsSection from "@/components/sections/SellerSituationsSection";
+import SellingProcessSection from "@/components/sections/SellingProcessSection";
 import ValueSection from "@/components/sections/ValueSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import BlogSection from "@/components/sections/BlogSection";
@@ -18,8 +18,8 @@ export default function Home() {
         <HeroSection />
         <TrustSection />
         <WhyChooseSection />
-        <PropertyListingsSection />
-        <BuyingProcessSection />
+        <SellerSituationsSection />
+        <SellingProcessSection />
         <ValueSection />
         <TestimonialsSection />
         <BlogSection />

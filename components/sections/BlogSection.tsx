@@ -15,18 +15,18 @@ export default function BlogSection() {
             className="max-w-lg"
             title={
               <>
-                Explore the latest
-                <br className="hidden sm:block" /> in real estate
+                Helpful resources
+                <br className="hidden sm:block" /> for homeowners
               </>
             }
           />
           <Button
-            href="#blog"
+            href="/sell-your-home#seller-form"
             variant="yellow"
             withArrow
             className="self-start sm:self-auto"
           >
-            View All Blog
+            Get My Free Cash Offer
           </Button>
         </div>
 

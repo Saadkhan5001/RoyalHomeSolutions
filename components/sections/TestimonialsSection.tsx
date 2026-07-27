@@ -27,8 +27,8 @@ export default function TestimonialsSection() {
           className="mx-auto max-w-md"
           title={
             <>
-              Hear from our
-              <br className="hidden sm:block" /> happy customers
+              What homeowners
+              <br className="hidden sm:block" /> say about us
             </>
           }
         />

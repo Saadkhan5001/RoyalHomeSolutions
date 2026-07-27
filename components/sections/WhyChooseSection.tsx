@@ -15,8 +15,8 @@ export default function WhyChooseSection() {
           className="mx-auto max-w-xl"
           title={
             <>
-              Why choose our real
-              <br className="hidden sm:block" /> estate expertise
+              A simpler way to
+              <br className="hidden sm:block" /> sell your home
             </>
           }
         />

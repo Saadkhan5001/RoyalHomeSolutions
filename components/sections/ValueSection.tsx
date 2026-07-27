@@ -24,31 +24,34 @@ export default function ValueSection() {
             className="max-w-lg"
             title={
               <>
-                Unlock more value
-                <br className="hidden sm:block" /> with Havenly
+                Why homeowners choose
+                <br className="hidden sm:block" /> Royal Home Solutions
               </>
             }
           />
           <Button
-            href="#listings"
+            href="/sell-your-home#seller-form"
             variant="yellow"
             withArrow
             className="self-start sm:self-auto"
           >
-            Explore Property
+            Get My Free Cash Offer
           </Button>
         </div>
 
         <div className="mt-12 grid items-stretch gap-6 lg:mt-16 lg:grid-cols-3">
-          {/* Left feature column */}
-          <div className="flex flex-col justify-between gap-6">
+          {/* Left feature column — cards flex-1 so they fill the column height
+              and sit flush with the centre image instead of floating apart. */}
+          <div className="flex flex-col gap-6">
             {valueFeaturesLeft.map((feature) => (
-              <ValueCard key={feature.id} feature={feature} />
+              <ValueCard key={feature.id} feature={feature} className="flex-1" />
             ))}
           </div>
 
-          {/* Centre vertical image slider */}
-          <div className="relative order-first h-[360px] overflow-hidden rounded-3xl sm:h-[440px] lg:order-none lg:h-auto">
+          {/* Centre vertical image slider. Its height drives the row: on lg the
+              side columns stretch to match, so a min-height here sets the
+              section height. */}
+          <div className="relative order-first h-[300px] overflow-hidden rounded-3xl sm:h-[380px] lg:order-none lg:h-auto lg:min-h-[420px]">
             <motion.div
               className="absolute inset-x-0 top-0"
               animate={reduceMotion ? undefined : { y: ["-50%", "0%"] }}
@@ -86,9 +89,9 @@ export default function ValueSection() {
           </div>
 
           {/* Right feature column */}
-          <div className="flex flex-col justify-between gap-6">
+          <div className="flex flex-col gap-6">
             {valueFeaturesRight.map((feature) => (
-              <ValueCard key={feature.id} feature={feature} />
+              <ValueCard key={feature.id} feature={feature} className="flex-1" />
             ))}
           </div>
         </div>

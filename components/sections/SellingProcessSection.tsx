@@ -7,7 +7,7 @@ import { Check } from "lucide-react";
 import CarouselControls from "@/components/ui/CarouselControls";
 import { processSteps, processSlides } from "@/data/processSteps";
 
-export default function BuyingProcessSection() {
+export default function SellingProcessSection() {
   const [index, setIndex] = useState(0);
   const slide = processSlides[index];
 
@@ -25,7 +25,7 @@ export default function BuyingProcessSection() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="mx-auto max-w-2xl text-center text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
         >
-          The seamless way to buy property
+          The simple way to sell your house
         </motion.h2>
 
         {/* Process timeline */}

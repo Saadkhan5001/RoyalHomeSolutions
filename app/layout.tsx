@@ -14,9 +14,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Royal Home Solutions, Inc. — Find your dream home",
+  title: "Sell Your House Fast for Cash | Royal Home Solutions, Inc.",
   description:
-    "Explore top property listings, get expert guidance, and make your dream home a reality with Royal Home Solutions, Inc. Where everyone is treated like royalty.",
+    "Royal Home Solutions buys houses for cash. Sell as-is with no repairs, no showings, and no agent commissions. Get your free cash offer and close on your timeline.",
 };
 
 export default function RootLayout({

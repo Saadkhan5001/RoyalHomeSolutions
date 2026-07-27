@@ -10,10 +10,9 @@ import { cn } from "@/lib/utils";
 // Homepage anchors are page-absolute (/#...) so they work from any route.
 const navLinks = [
   { label: "Home", href: "/#home" },
-  { label: "About", href: "/#about" },
+  { label: "How It Works", href: "/#process" },
   { label: "Sell Your Home", href: "/sell-your-home" },
-  { label: "Agent", href: "/#agent" },
-  { label: "Blog", href: "/#blog" },
+  { label: "About", href: "/#about" },
   { label: "Contact", href: "/#contact" },
 ];
 
@@ -155,8 +154,8 @@ export default function Navbar() {
         </ul>
 
         <div className="hidden lg:block">
-          <Button href="/#listings" variant="white" withArrow>
-            Explore Property
+          <Button href="/sell-your-home#seller-form" variant="white" withArrow>
+            Get Cash Offer
           </Button>
         </div>
 
@@ -193,12 +192,12 @@ export default function Navbar() {
           ))}
           <li className="mt-3">
             <Button
-              href="/#listings"
+              href="/sell-your-home#seller-form"
               variant="yellow"
               withArrow
               className="w-full"
             >
-              Explore Property
+              Get Cash Offer
             </Button>
           </li>
         </ul>
