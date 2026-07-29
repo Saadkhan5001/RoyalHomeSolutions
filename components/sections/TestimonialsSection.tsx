@@ -1,23 +1,22 @@
-"use client";
-
-import { useRef } from "react";
 import SectionHeading from "@/components/ui/SectionHeading";
-import CarouselControls from "@/components/ui/CarouselControls";
 import TestimonialCard from "@/components/cards/TestimonialCard";
-import { testimonials } from "@/data/testimonials";
+import { publishedTestimonials } from "@/data/testimonials";
+import { cn } from "@/lib/utils";
 
+/**
+ * Genuine testimonials from `data/testimonials.ts`.
+ *
+ * Static layout rather than the old carousel: the business has two real
+ * reviews (one published until the second is client-approved), and a carousel
+ * of one or two cards reads as filler. Centered single column for one entry,
+ * two-up grid once the second is published. Renders nothing if the published
+ * list is ever empty — an empty "what customers say" section is worse than
+ * none.
+ */
 export default function TestimonialsSection() {
-  const trackRef = useRef<HTMLDivElement>(null);
+  if (publishedTestimonials.length === 0) return null;
 
-  const scrollByCard = (direction: 1 | -1) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const firstCard = track.querySelector<HTMLElement>("[data-card]");
-    const amount = firstCard
-      ? firstCard.offsetWidth + 24
-      : track.clientWidth * 0.8;
-    track.scrollBy({ left: amount * direction, behavior: "smooth" });
-  };
+  const single = publishedTestimonials.length === 1;
 
   return (
     <section className="bg-white py-20 lg:py-28">
@@ -32,29 +31,19 @@ export default function TestimonialsSection() {
             </>
           }
         />
-      </div>
 
-      <div
-        ref={trackRef}
-        className="no-scrollbar mx-auto mt-12 flex max-w-6xl snap-x snap-mandatory gap-6 overflow-x-auto px-6 lg:mt-16"
-      >
-        {testimonials.map((testimonial) => (
-          <div
-            key={testimonial.id}
-            data-card
-            className="w-[85vw] flex-shrink-0 snap-center sm:w-[60vw] lg:w-[calc((100%-1.5rem)/2)]"
-          >
-            <TestimonialCard testimonial={testimonial} />
-          </div>
-        ))}
-      </div>
-
-      <div className="mx-auto mt-10 flex max-w-6xl justify-center px-6">
-        <CarouselControls
-          variant="outline"
-          onPrev={() => scrollByCard(-1)}
-          onNext={() => scrollByCard(1)}
-        />
+        <div
+          className={cn(
+            "mx-auto mt-12 lg:mt-16",
+            single
+              ? "max-w-3xl"
+              : "grid max-w-6xl gap-6 lg:grid-cols-2",
+          )}
+        >
+          {publishedTestimonials.map((testimonial) => (
+            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+          ))}
+        </div>
       </div>
     </section>
   );

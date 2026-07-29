@@ -2,15 +2,8 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import Button from "@/components/ui/Button";
-
-// Decorative avatar images for the trust badge.
-const avatars = [
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80",
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=160&q=80",
-  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=160&q=80",
-];
 
 export default function HeroSection() {
   return (
@@ -47,38 +40,19 @@ export default function HeroSection() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="max-w-3xl"
         >
-          {/* Trust badge */}
-          <div className="mb-7 flex items-center gap-3">
-            <div className="flex -space-x-3">
-              {avatars.map((src, i) => (
-                <span
-                  key={src}
-                  className="relative h-9 w-9 overflow-hidden rounded-full border-2 border-white/80"
-                >
-                  <Image
-                    src={src}
-                    alt={`Happy client ${i + 1}`}
-                    fill
-                    sizes="36px"
-                    className="object-cover"
-                  />
-                </span>
-              ))}
-            </div>
-            <div>
-              <div className="flex gap-0.5" aria-label="5 out of 5 stars">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-3.5 w-3.5 fill-brand-yellow text-brand-yellow"
-                    aria-hidden="true"
-                  />
-                ))}
-              </div>
-              <p className="mt-0.5 text-xs font-medium text-white/90">
-                Trusted by local homeowners
-              </p>
-            </div>
+          {/* Trust badge. Deliberately face- and rating-free: the previous
+              treatment used stock portraits as "happy clients" with an
+              invented 5/5 rating (removed in NOD-198). The claims below are
+              backed by the site's own stated model — direct purchase, no
+              fees or commissions. */}
+          <div className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm">
+            <BadgeCheck
+              className="h-5 w-5 text-brand-yellow"
+              aria-hidden="true"
+            />
+            <p className="text-xs font-medium text-white/90 sm:text-sm">
+              Trusted by local homeowners · No fees or commissions
+            </p>
           </div>
 
           <h1 className="text-4xl font-semibold leading-[1.03] tracking-tight text-white sm:text-6xl lg:text-7xl">
