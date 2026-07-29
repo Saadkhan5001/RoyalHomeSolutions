@@ -100,9 +100,10 @@ export default function SellYourHomePage() {
                 Sell Your Home Without the Stress
               </h1>
               <p className="mt-6 max-w-md text-base leading-relaxed text-white/85 sm:text-lg">
-                Skip repairs, showings, and agent commissions. Tell us about
-                your property and we&apos;ll help you understand your best next
-                step.
+                We&apos;re not listing your home — we&apos;re buying it
+                directly. No agent commissions, no repairs, and no showings.
+                Tell us about the property and we&apos;ll review it for a
+                direct cash offer.
               </p>
               <div className="mt-8">
                 <Button href="#seller-form" variant="yellow" withArrow>

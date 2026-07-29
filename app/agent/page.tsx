@@ -93,10 +93,13 @@ export default function AgentPage() {
                 of the result. Some homeowners are better served by listing
                 traditionally — and when that&apos;s true, we say so.
               </p>
+              {/* Licensed-agent referral statement intentionally omitted
+                  pending Jonah's confirmation (NOD-199). */}
               <p className="mt-4 text-base leading-relaxed text-neutral-600">
                 When it isn&apos;t, we make a direct offer, handle the details,
                 and close on the timeline that fits your situation rather than
-                ours.
+                ours. Some of the homes we purchase are renovated and later
+                resold as move-in-ready properties.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">

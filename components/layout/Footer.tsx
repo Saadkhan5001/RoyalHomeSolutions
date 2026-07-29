@@ -82,19 +82,28 @@ export default function Footer() {
       <div className="mx-auto max-w-8xl px-6 py-16 lg:px-10">
         {/* Top row: brand + contact */}
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <Link
-            href="#home"
-            className="inline-flex items-center"
-            aria-label="Royal Home Solutions, Inc. — home"
-          >
-            <Image
-              src="/Assets/Images/Logo-cropped.png"
-              alt="Royal Home Solutions, Inc."
-              width={403}
-              height={175}
-              className="h-20 w-auto"
-            />
-          </Link>
+          <div>
+            <Link
+              href="#home"
+              className="inline-flex items-center"
+              aria-label="Royal Home Solutions, Inc. — home"
+            >
+              <Image
+                src="/Assets/Images/Logo-cropped.png"
+                alt="Royal Home Solutions, Inc."
+                width={403}
+                height={175}
+                className="h-20 w-auto"
+              />
+            </Link>
+            {/* Investor-positioning brand line (NOD-199). No service-area
+                claim until NOD-196 confirms it. */}
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-neutral-500">
+              Royal Home Solutions buys homes directly from owners, renovates
+              select properties, and resells a limited number of move-in-ready
+              homes.
+            </p>
+          </div>
 
           <div className="flex flex-col gap-2 text-sm sm:flex-row sm:gap-8">
             <p className="text-neutral-500">

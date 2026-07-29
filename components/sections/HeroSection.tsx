@@ -60,8 +60,8 @@ export default function HeroSection() {
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
-            Royal Home Solutions helps homeowners sell as-is with a simple,
-            guided process — no repairs, no showings, and no agent commissions.
+            We buy houses directly from homeowners — as-is, for cash, with no
+            repairs, no showings, and no agent commissions.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">

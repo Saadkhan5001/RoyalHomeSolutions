@@ -15,10 +15,10 @@ export interface WhyChooseItem {
 
 export const whyChooseItems: WhyChooseItem[] = [
   {
-    id: "fair-cash-offer",
-    title: "Fair Cash Offer",
+    id: "direct-buyer",
+    title: "Direct Buyer, Not a Listing Agent",
     description:
-      "We review your property and situation so you can understand your selling options clearly.",
+      "We buy your house directly, so there is no listing process, no agent commission, and no waiting for a third-party buyer.",
     icon: BadgeDollarSign,
   },
   {

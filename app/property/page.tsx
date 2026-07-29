@@ -41,9 +41,13 @@ export default function PropertyPage() {
               className="mx-auto max-w-2xl"
               title="Types of property we purchase"
             />
+            {/* "with our own funds" intentionally omitted pending Jonah's
+                confirmation that it is always accurate (NOD-199). */}
             <p className="mx-auto mt-5 max-w-xl text-center text-sm leading-relaxed text-neutral-600 sm:text-base">
-              If your property isn&apos;t listed here, it&apos;s still worth
-              asking — these are simply the ones we see most often.
+              These are the types of properties we commonly purchase directly.
+              You are selling to Royal Home Solutions, not listing the
+              property with an agent. If your property isn&apos;t listed here,
+              it&apos;s still worth asking.
             </p>
 
             <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

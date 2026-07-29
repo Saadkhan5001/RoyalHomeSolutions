@@ -30,10 +30,17 @@ export default function TrustSection() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
           >
+            {/* Investor positioning (NOD-199), from the archived About/FAQ
+                copy. The licensed-agent referral sentence is intentionally
+                omitted until Jonah confirms it is still current. */}
             <p className="text-base leading-relaxed text-neutral-600 sm:text-lg">
-              Selling a home can feel overwhelming. Royal Home Solutions gives
-              homeowners a simpler path forward with honest guidance, clear
-              communication, and flexible options based on their situation.
+              Royal Home Solutions is a real estate investment company that
+              buys homes directly from owners. In a direct purchase, we are
+              the buyer — not your listing agent — so there are no agent
+              commissions or listing fees. We invest in renovating select
+              properties and later resell a limited number of move-in-ready
+              homes. Our mission is to improve the quality of housing, one
+              property and one neighborhood at a time.
             </p>
 
             <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
