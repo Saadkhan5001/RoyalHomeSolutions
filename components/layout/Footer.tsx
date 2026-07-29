@@ -24,6 +24,7 @@ const informationLinks = [
   { label: "Sell Your Home", href: "/sell-your-home" },
   { label: "Get a Cash Offer", href: "/sell-your-home#seller-form" },
   { label: "Homeowners We Help", href: "/#situations" },
+  { label: "FAQ", href: "/faq" },
   { label: "Homeowner Resources", href: "/blog" },
 ];
 

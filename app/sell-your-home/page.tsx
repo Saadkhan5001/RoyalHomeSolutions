@@ -49,6 +49,44 @@ const sellerValues: ValueFeature[] = [
   },
 ];
 
+/**
+ * "Why Work With Us" points, restored from the archived site and modernised
+ * (NOD-201). The offer point describes what the offer is *based on* rather
+ * than promising market value or a highest offer — neither is verifiable.
+ */
+const whyWorkWithUs = [
+  {
+    title: "Direct buyer",
+    description:
+      "Royal Home Solutions evaluates and purchases properties directly rather than listing them for third-party buyers.",
+  },
+  {
+    title: "Sell as-is",
+    description:
+      "No repairs, renovations, cleaning, staging, or repeated showings are required before contacting us.",
+  },
+  {
+    title: "No agent commission",
+    description:
+      "A direct purchase does not involve a traditional listing-agent commission.",
+  },
+  {
+    title: "Flexible timing",
+    description:
+      "The closing date is discussed with the seller and based on the property and transaction requirements.",
+  },
+  {
+    title: "No obligation",
+    description:
+      "Submitting the property or reviewing an offer does not require the homeowner to proceed.",
+  },
+  {
+    title: "Clear offer approach",
+    description:
+      "The offer reflects the property's condition, expected renovation work, holding costs, and resale considerations.",
+  },
+];
+
 const sellingSteps = [
   {
     title: "Tell Us About Your Property",
@@ -224,8 +262,43 @@ export default function SellYourHomePage() {
           </div>
         </section>
 
+        {/* Why Work With Us — restored from the archived site (NOD-201),
+            modernised. Deliberately makes no "market value" or "highest offer"
+            claim: the offer basis is described, not the outcome. */}
+        <section className="bg-white py-20 lg:py-28">
+          <div className="mx-auto max-w-8xl px-6 lg:px-10">
+            <SectionHeading
+              align="center"
+              className="mx-auto max-w-3xl"
+              title="Why homeowners work with Royal Home Solutions"
+            />
+            <p className="mx-auto mt-5 max-w-2xl text-center text-base leading-relaxed text-neutral-600">
+              Selling through a traditional listing is not the right solution
+              for every homeowner. Royal Home Solutions offers a direct-sale
+              option for people who value a simpler process, an as-is sale, and
+              a clear conversation about their property.
+            </p>
+
+            <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {whyWorkWithUs.map((benefit) => (
+                <div
+                  key={benefit.title}
+                  className="rounded-3xl border border-neutral-200 bg-neutral-50 p-7"
+                >
+                  <h3 className="text-lg font-semibold text-brand-ink">
+                    {benefit.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+                    {benefit.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Final CTA */}
-        <section className="bg-white py-12 lg:py-20">
+        <section className="bg-neutral-50 py-12 lg:py-20">
           <div className="mx-auto max-w-8xl px-6 lg:px-10">
             <div className="overflow-hidden rounded-4xl bg-brand-ink px-6 py-16 text-center sm:py-20 lg:px-16">
               <h2 className="mx-auto max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl">
