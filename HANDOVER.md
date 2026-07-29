@@ -228,11 +228,71 @@ Edit those files to change copy — no markup changes needed.
 - **`components/forms/SellerLeadForm.tsx`** — reusable, controlled seller
   lead-capture form (frosted glass: `bg-white/85 backdrop-blur-md`, border,
   shadow, rounded). Fields: first/last name, phone, email, property address,
-  "how soon to sell" select, optional message. On submit it builds a typed
-  `SellerLead` object, `console.log`s it, and shows an inline success state.
-  **No backend yet** — a `TODO` marks where to POST to an API/DB. Optional `id`
-  prop for an anchor target. Used in the homepage hero (right column) and the
-  seller page hero — single source, no duplication.
+  "how soon to sell" select, optional message. On submit it POSTs to
+  `/api/seller-leads` and renders one of three states: submitting (disabled
+  button, spinner), success (inline confirmation), or error (inline alert with
+  the entered values preserved so nothing is retyped). The Meta Pixel `Lead`
+  event fires only on a successful response. Optional `id` prop for an anchor
+  target. Used in the seller page hero — single source, no duplication.
+- **`lib/leads.ts`** — the `SellerLead` type, the `timelineOptions` list and
+  `validateSellerLead()`. Shared by the form and the API route so both validate
+  against the same rules; the route never trusts the client's `required`
+  attributes.
+- **`lib/leadEmails.ts`** — the two HTML email bodies. Inline-styled tables
+  (Outlook/Gmail strip `<style>`, flexbox and grid), and all lead input passes
+  through `escapeHtml()` before it reaches the markup.
+- **`app/api/seller-leads/route.ts`** — validates the payload, then sends via
+  Resend: an internal notification to `LEAD_NOTIFY_EMAIL` (reply-to set to the
+  seller, so hitting reply reaches them directly), and a confirmation to the
+  seller. The internal send decides the response — if it fails the visitor gets
+  an error and can retry. The seller confirmation is best-effort and only
+  logged on failure, since the lead is already delivered by that point.
+  Requires `RESEND_API_KEY`, `LEAD_NOTIFY_EMAIL` and `LEAD_FROM_EMAIL`; see
+  `.env.example`. The `from` domain must be verified in Resend or sending
+  fails. Rate limited per IP (default 5 per 10 minutes) before parsing, so a
+  flood costs as little work as possible; a blocked caller gets a 429 with a
+  `Retry-After` header and a plain-English message shown in the form.
+- **`lib/rateLimit.ts`** — dependency-free in-memory sliding window, shared by
+  both API routes. Process-local: a hard limit on a single long-running server,
+  but **per-instance on serverless**, so several Vercel instances each allow
+  their own quota. Enough to stop a naive script; swap in Redis/Upstash if a
+  distributed limit is ever needed.
+
+  Checking and counting are deliberately separate. `checkRateLimit()` runs
+  before the body is parsed so a flood is rejected cheaply, but
+  `recordRateLimitHit()` is only called once a request is valid and about to do
+  real work. Without that split, a visitor who mistypes their email twice burns
+  their allowance on validation errors and is locked out of their first correct
+  attempt. Blocked requests are never counted either, so hammering can't extend
+  a lockout.
+- **`lib/validation.ts`** — `isValidEmail()` and `MAX_EMAIL_LENGTH`, shared by
+  the lead and newsletter routes so the address rules can't drift apart.
+- **`app/api/newsletter/route.ts`** — footer newsletter signup. Adds the address
+  to a Resend audience via `contacts.create`, reusing `RESEND_API_KEY` and
+  needing `RESEND_AUDIENCE_ID` (create one at resend.com/audiences). Resend was
+  chosen over a separate email platform simply because it is already configured
+  — swapping to Mailchimp/ConvertKit later only touches the create call.
+  Rate limited at 3 valid signups per IP per 10 minutes. An address already on
+  the list is treated as success: it is the truth from the visitor's side, and
+  saying otherwise would leak who is subscribed. `Footer.tsx` renders
+  submitting / success / error states and keeps the typed address on failure.
+- **`lib/leadStore.ts`** — append-only JSONL at `.leads/seller-leads.jsonl`
+  (gitignored — it holds personal data and must never be committed). Override
+  with `LEAD_STORE_PATH`. JSONL rather than a JSON array so each append is one
+  atomic write with no read-modify-write race between concurrent leads.
+  `readLeads()` reads them back, skipping malformed lines. Writes happen after
+  the notification email succeeds, so a visitor retrying a failed send leaves
+  no duplicate.
+
+  > ⚠️ **The store does not persist on Vercel.** Serverless filesystems are
+  > read-only apart from a per-instance `/tmp` that is wiped between
+  > invocations, so on the current deploy target the JSONL file is effectively
+  > a no-op and **the emails in the team's inbox are the durable record**.
+  > `appendLead` detects the read-only filesystem, warns once per process and
+  > returns null — it never fails a submission. To get real persistence either
+  > deploy to a host with a writable disk (VPS, Docker, Fly, Render) where the
+  > file works as-is, or add a hosted store (Vercel Postgres/KV, Supabase,
+  > Airtable, a CRM) behind the same `appendLead` call.
 - **`app/sell-your-home/page.tsx`** — `/sell-your-home` landing page (server
   component with its own metadata): hero with the lead form, value cards
   (reuses `ValueCard`), a 4-step "how selling works" section, and a final CTA
@@ -241,6 +301,37 @@ Edit those files to change copy — no markup changes needed.
   anchors are page-absolute (`/#about`, etc.) so they work from any route, and
   the desktop/mobile breakpoint moved to `lg` (room for the larger logo + extra
   link).
+
+## 9c. Interior routes
+
+`components/layout/PageHero.tsx` is the shared hero for interior pages —
+shorter than the homepage and seller heroes, which are full-screen because they
+carry a conversion action. These sit above real content, so the content starts
+above the fold.
+
+- **`/property`** — *Properties We Buy*. Criteria, **not listings**: property
+  types (`data/propertyTypes.ts`), conditions that don't block a sale, and the
+  seller situations reused from `data/sellerSituations.ts` so the homepage and
+  this page can't drift apart. Royal Home Solutions buys houses rather than
+  selling them, so there is no inventory — same reasoning already recorded in
+  `sellerSituations.ts`: no prices, no fake houses for sale.
+- **`/agent`** — founder profile for Jonah Stevens. The visible bio is written
+  at company level and asserts only what the rest of the site already claims;
+  there is a `TODO` in the file marking where his real bio belongs. **Do not
+  add years of experience, deal counts, or credentials without confirming
+  them** — this is a page about a real person on a site that takes leads.
+- **`/blog`** — index of `data/blog.ts`. Cards are intentionally **not links**:
+  the data holds titles, categories and authors but no article bodies, so there
+  is nothing to route to. Add a `/blog/[slug]` route once posts have content.
+- **`app/not-found.tsx`** — branded 404 with Navbar/Footer and four onward
+  links. Returns a real HTTP 404, which the default Next.js page also did but
+  without the branding or the routes back into the funnel.
+
+Link wiring: the nav's **About** now points at `/agent` rather than the
+`/#about` anchor, and the footer's **Resources** became **Homeowner Resources**
+→ `/blog`. **Properties We Buy** → `/property` was added to both. All remaining
+`/#...` anchors still resolve to real homepage sections (`#home`, `#process`,
+`#about`, `#situations`, `#blog`, `#contact`) and were left alone.
 
 ## 10. Key files to know
 

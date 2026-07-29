@@ -9,12 +9,14 @@ import {
   Instagram,
   Twitter,
   Linkedin,
+  Loader2,
 } from "lucide-react";
 
 const landingsLinks = [
   { label: "Homepage", href: "/#home" },
   { label: "How It Works", href: "/#process" },
-  { label: "About Us", href: "/#about" },
+  { label: "Properties We Buy", href: "/property" },
+  { label: "About Us", href: "/agent" },
   { label: "Contact", href: "/#contact" },
 ];
 
@@ -22,7 +24,7 @@ const informationLinks = [
   { label: "Sell Your Home", href: "/sell-your-home" },
   { label: "Get a Cash Offer", href: "/sell-your-home#seller-form" },
   { label: "Homeowners We Help", href: "/#situations" },
-  { label: "Resources", href: "/#blog" },
+  { label: "Homeowner Resources", href: "/blog" },
 ];
 
 const socials = [
@@ -34,13 +36,45 @@ const socials = [
 
 export default function Footer() {
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const submitting = status === "submitting";
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
-    setSubmitted(true);
-    setEmail("");
+    if (!email || submitting) return;
+
+    setStatus("submitting");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        throw new Error(
+          body?.error ?? "We couldn't sign you up. Please try again.",
+        );
+      }
+
+      setStatus("success");
+      setEmail("");
+    } catch (error) {
+      // Keep the typed address so they don't have to retype it to retry.
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "We couldn't sign you up. Please try again.",
+      );
+      setStatus("error");
+    }
   };
 
   return (
@@ -134,20 +168,31 @@ export default function Footer() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={submitting}
                 placeholder="Enter your email"
-                className="w-full rounded-full border border-neutral-300 px-5 py-3 text-sm text-brand-ink outline-none transition-colors placeholder:text-neutral-400 focus:border-brand-ink"
+                className="w-full rounded-full border border-neutral-300 px-5 py-3 text-sm text-brand-ink outline-none transition-colors placeholder:text-neutral-400 focus:border-brand-ink disabled:opacity-60"
               />
               <button
                 type="submit"
+                disabled={submitting}
                 aria-label="Subscribe to newsletter"
-                className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-brand-yellow text-brand-ink transition-colors hover:bg-brand-yellow-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2"
+                className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-brand-yellow text-brand-ink transition-colors hover:bg-brand-yellow-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                {submitting ? (
+                  <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+                ) : (
+                  <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                )}
               </button>
             </form>
-            {submitted && (
+            {status === "success" && (
               <p className="mt-3 text-sm text-brand-green" role="status">
                 Thanks for subscribing!
+              </p>
+            )}
+            {status === "error" && errorMessage && (
+              <p className="mt-3 text-sm text-red-600" role="alert">
+                {errorMessage}
               </p>
             )}
 

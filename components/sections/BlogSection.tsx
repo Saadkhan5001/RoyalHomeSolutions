@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -42,6 +43,15 @@ export default function BlogSection() {
               <BlogCard post={post} />
             </motion.div>
           ))}
+        </div>
+
+        <div className="mt-10 text-center">
+          <Link
+            href="/blog"
+            className="text-sm font-semibold text-brand-ink underline underline-offset-4 hover:no-underline"
+          >
+            View all homeowner resources
+          </Link>
         </div>
       </div>
     </section>

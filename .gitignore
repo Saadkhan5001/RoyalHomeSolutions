@@ -22,6 +22,9 @@ yarn-error.log*
 # local env files
 .env*.local
 
+# captured seller leads (contains personal data — never commit)
+/.leads/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -12,6 +12,8 @@ interface ButtonProps {
   className?: string;
   onClick?: () => void;
   type?: "button" | "submit";
+  /** Ignored when `href` is set — links have no disabled state. */
+  disabled?: boolean;
   "aria-label"?: string;
 }
 
@@ -35,11 +37,13 @@ export default function Button({
   className,
   onClick,
   type = "button",
+  disabled = false,
   ...rest
 }: ButtonProps) {
   const classes = cn(
     "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2",
     variantStyles[variant],
+    disabled && "cursor-not-allowed opacity-60",
     className
   );
 
@@ -59,7 +63,13 @@ export default function Button({
   }
 
   return (
-    <button type={type} onClick={onClick} className={classes} {...rest}>
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={classes}
+      {...rest}
+    >
       {content}
     </button>
   );

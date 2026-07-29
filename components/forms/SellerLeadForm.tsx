@@ -1,21 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Lock, CheckCircle2 } from "lucide-react";
+import { Lock, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { trackLead } from "@/lib/metaPixel";
+import { timelineOptions, type SellerLead } from "@/lib/leads";
 import { cn } from "@/lib/utils";
 
-/** Shape of a captured seller lead. Ready to POST to an API later. */
-export interface SellerLead {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  propertyAddress: string;
-  timeline: string;
-  message: string;
-}
+export type { SellerLead };
 
 const emptyLead: SellerLead = {
   firstName: "",
@@ -26,8 +18,6 @@ const emptyLead: SellerLead = {
   timeline: "",
   message: "",
 };
-
-const timelineOptions = ["ASAP", "1–3 months", "3–6 months", "Just exploring"];
 
 /** Formats a US phone number as the user types: (000) 000-0000. */
 function formatPhone(value: string): string {
@@ -72,6 +62,8 @@ const variantStyles: Record<
     success: string;
     successTitle: string;
     successText: string;
+    error: string;
+    errorIcon: string;
   }
 > = {
   hero: {
@@ -87,6 +79,8 @@ const variantStyles: Record<
     success: "border-white/15 bg-white/10",
     successTitle: "text-white",
     successText: "text-white/70",
+    error: "border-red-400/40 bg-red-500/15 text-red-50",
+    errorIcon: "text-red-300",
   },
   page: {
     card: "border border-white/60 bg-white/85 shadow-2xl backdrop-blur-md",
@@ -101,6 +95,8 @@ const variantStyles: Record<
     success: "border-brand-green/30 bg-brand-green/10",
     successTitle: "text-brand-ink",
     successText: "text-neutral-600",
+    error: "border-red-300 bg-red-50 text-red-800",
+    errorIcon: "text-red-600",
   },
 };
 
@@ -123,7 +119,13 @@ export default function SellerLeadForm({
   );
 
   const [data, setData] = useState<SellerLead>(emptyLead);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const submitted = status === "success";
+  const isSubmitting = status === "submitting";
 
   const update =
     (field: keyof SellerLead) =>
@@ -134,29 +136,45 @@ export default function SellerLeadForm({
     ) =>
       setData((prev) => ({ ...prev, [field]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
-    // Format the submitted data into a clean object for later use. `source`
-    // tags which page/entry point captured the lead for later attribution.
+    setStatus("submitting");
+    setErrorMessage("");
+
+    // `source` tags which page/entry point captured the lead for attribution.
     const lead = { ...data, source };
 
-    // TODO: Replace this with a real API/database call, e.g.
-    //   await fetch("/api/seller-leads", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(lead),
-    //   });
-    console.log("Seller lead submitted:", lead);
+    try {
+      const response = await fetch("/api/seller-leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(lead),
+      });
 
-    // Meta Pixel: standard Lead event, fired only once the submit succeeds.
-    // TODO: When the API call above replaces the console.log, move this inside
-    // the success branch and mirror it with the Conversions API (server-side)
-    // using a shared event_id for deduplication.
-    trackLead();
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        throw new Error(
+          body?.error ?? "We couldn't submit your details. Please try again.",
+        );
+      }
 
-    setSubmitted(true);
-    setData(emptyLead);
+      // Meta Pixel: standard Lead event, fired only once the submit succeeds.
+      // TODO: Mirror this with the Conversions API (server-side) from the route
+      // handler, using a shared event_id for deduplication.
+      trackLead();
+
+      setStatus("success");
+      setData(emptyLead);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "We couldn't submit your details. Please try again.",
+      );
+      setStatus("error");
+    }
   };
 
   return (
@@ -196,7 +214,7 @@ export default function SellerLeadForm({
             </p>
             <button
               type="button"
-              onClick={() => setSubmitted(false)}
+              onClick={() => setStatus("idle")}
               className={cn(
                 "mt-3 text-sm font-semibold underline underline-offset-4 hover:no-underline",
                 s.secondaryBtn,
@@ -208,6 +226,22 @@ export default function SellerLeadForm({
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="mt-6 space-y-3.5">
+          {status === "error" && errorMessage && (
+            <div
+              role="alert"
+              className={cn(
+                "flex items-start gap-2.5 rounded-xl border p-3.5 text-sm",
+                s.error,
+              )}
+            >
+              <AlertCircle
+                className={cn("mt-0.5 h-4 w-4 flex-shrink-0", s.errorIcon)}
+                aria-hidden="true"
+              />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           <div className="grid gap-3.5 sm:grid-cols-2">
             <div>
               <label htmlFor="firstName" className="sr-only">
@@ -343,8 +377,21 @@ export default function SellerLeadForm({
             />
           </div>
 
-          <Button type="submit" variant="yellow" withArrow className="w-full">
-            {submitLabel}
+          <Button
+            type="submit"
+            variant="yellow"
+            withArrow={!isSubmitting}
+            disabled={isSubmitting}
+            className="w-full"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                Sending…
+              </>
+            ) : (
+              submitLabel
+            )}
           </Button>
 
           <p
