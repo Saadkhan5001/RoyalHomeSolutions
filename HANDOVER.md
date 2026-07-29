@@ -180,8 +180,8 @@ Intentional fixes applied (consistent with the "fix obvious errors" request):
 - Duplicate "Market comparison" value card → second renamed **"Risk insights"**
   (its copy is about seismic/flood risk).
 - Footer: removed the "Made in Framer" badge and "Template by Themeflow · Powered
-  by Framer" credit; uses a Royal Home Solutions copyright and
-  `hello@royalhomesolutions.com`.
+  by Framer" credit; uses a Royal Home Solutions copyright and the contact
+  address recorded under **Branding** below.
 - Added a 4th buying-process slide ("Buy back with confidence") so all four
   timeline steps map 1:1 to slides.
 
@@ -194,17 +194,51 @@ Intentional fixes applied (consistent with the "fix obvious errors" request):
   Use the **full-color** logo only on light/white backgrounds; use the
   **white/inverted** treatment on dark backgrounds. Copyright and page metadata
   use the company name. The old placeholder text-mark has been removed.
-- Headlines/marketing copy still reference "Havenly" (from the original template
-  screenshots) — update in the section components / `data` if a full copy rebrand
-  is wanted. The contact email `hello@royalhomesolutions.com` in the footer is a
-  placeholder and should be replaced with the real address.
+- The copy rebrand is complete — no "Havenly" references remain in any component
+  or `data/*.ts` file. The mentions elsewhere in this document are describing the
+  template the site was rebuilt from, not live copy.
+- The footer contact address is `jonah@nodevision.ai`. This is the **Node Vision
+  agency** address, used as an interim contact — swap it for a Royal Home
+  Solutions mailbox once one is ready to receive. Note `leads@royalhomesolutions.com`
+  is a *sending* identity in Resend with Receiving deliberately disabled, so it
+  is not a valid destination for footer contact mail.
 
 ### Images
 - **Hero** uses the local `public/Assets/Images/Hero-background.jpeg`.
-- **All other images are Unsplash placeholders** referenced by URL. Allowed host
+- **Most other images are Unsplash placeholders** referenced by URL. Allowed host
   is configured in `next.config.mjs` (`images.unsplash.com`). To use licensed
   assets, drop files in `public/Assets/Images/` and update the `image` /
   `src` fields in the relevant `data/*.ts` file (or section component).
+
+  > ⚠️ **Not all of these are equivalent.** Some placeholders are photographs of
+  > **real people presented as named customers** — the four testimonial authors in
+  > `data/testimonials.ts` and the hero "trust badge" avatars in
+  > `HeroSection.tsx`. Swapping in different stock photos does not fix that; the
+  > testimonials themselves need to be real (with permission to use the person's
+  > likeness) or removed. Tracked in NOD-110.
+
+- **Local photo assets are web-sized.** Source photos were resized to a 2000px
+  long edge at quality 82 (mozjpeg), which cut 14 MB from the repo — the largest
+  was an 8300×5536 / 12.5 MB portrait being served as a 36px avatar. Full-
+  resolution originals remain in git history if they are ever needed. Keep new
+  photography under ~2000px; `next/image` handles per-viewport resizing from
+  there.
+
+### Icons & link previews
+- `app/icon.png` (512×512) and `app/apple-icon.png` (180×180) — the graphic mark
+  cropped out of `Logo-mark.png`, which is a full lockup whose wordmark is
+  illegible at favicon sizes.
+- `app/opengraph-image.png` (1200×630) plus `app/opengraph-image.alt.txt`.
+  Next.js picks these up by filename convention and emits the `og:`/`twitter:`
+  tags automatically; they apply to every route unless a route adds its own.
+  A route-level `opengraph-image.tsx` generated via `next/og` was tried first and
+  **reverted** — `@vercel/og` fails on Windows resolving its bundled default
+  font (`ERR_INVALID_URL` on a `.\file:\…noto-sans…ttf` path), so it could not be
+  verified locally. If you switch to dynamic generation later, pass an explicit
+  `fonts:` array to `ImageResponse` to avoid that code path.
+- Root metadata sets `metadataBase` from `NEXT_PUBLIC_SITE_URL` (falling back to
+  the production domain) so `og:image` and canonical URLs resolve absolutely.
+  Set that env var on preview deployments if you want them to self-reference.
 
 ### Sample data
 All listing, testimonial, blog, value, and process content lives in `data/`.

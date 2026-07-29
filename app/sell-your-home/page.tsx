@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { BadgeDollarSign, Home, Percent, CalendarClock } from "lucide-react";
+import { pageMetadata } from "@/lib/seo";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Button from "@/components/ui/Button";
@@ -9,11 +10,12 @@ import ValueCard from "@/components/cards/ValueCard";
 import SellerLeadForm from "@/components/forms/SellerLeadForm";
 import type { ValueFeature } from "@/data/valueFeatures";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Sell Your House Fast for Cash — Royal Home Solutions, Inc.",
   description:
     "Get a free cash offer on your house. Sell as-is with no repairs, no showings, and no agent commissions. Royal Home Solutions helps homeowners close on their timeline.",
-};
+  path: "/sell-your-home",
+});
 
 const sellerValues: ValueFeature[] = [
   {

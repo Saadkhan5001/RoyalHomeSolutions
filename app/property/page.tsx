@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageHero from "@/components/layout/PageHero";
@@ -8,11 +9,12 @@ import ValueCard from "@/components/cards/ValueCard";
 import { propertyTypes, propertyConditions } from "@/data/propertyTypes";
 import { sellerSituations } from "@/data/sellerSituations";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Properties We Buy — Royal Home Solutions, Inc.",
   description:
     "Royal Home Solutions buys single-family homes, condos, multi-family, land, and rentals in any condition — including homes needing repairs, inherited properties, and tenant-occupied houses.",
-};
+  path: "/property",
+});
 
 export default function PropertyPage() {
   return (

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ShieldCheck, MessageSquare, CalendarClock } from "lucide-react";
+import { pageMetadata } from "@/lib/seo";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageHero from "@/components/layout/PageHero";
@@ -10,11 +11,12 @@ import CTASection from "@/components/sections/CTASection";
 import ValueCard from "@/components/cards/ValueCard";
 import type { ValueFeature } from "@/data/valueFeatures";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Meet Jonah Stevens — Royal Home Solutions, Inc.",
   description:
     "Jonah Stevens founded Royal Home Solutions to give homeowners a direct, no-pressure alternative to listing. Talk to the person who will actually handle your sale.",
-};
+  path: "/agent",
+});
 
 /**
  * How the team works. These describe the company's process, which is asserted

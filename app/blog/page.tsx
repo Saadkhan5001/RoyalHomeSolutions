@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageHero from "@/components/layout/PageHero";
@@ -6,11 +7,12 @@ import CTASection from "@/components/sections/CTASection";
 import BlogCard from "@/components/cards/BlogCard";
 import { blogPosts } from "@/data/blog";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Homeowner Resources — Royal Home Solutions, Inc.",
   description:
     "Practical guides for homeowners weighing a sale: selling a house that needs repairs, what to know before accepting a cash offer, and handling an inherited property.",
-};
+  path: "/blog",
+});
 
 export default function BlogPage() {
   return (
