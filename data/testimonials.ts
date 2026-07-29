@@ -35,16 +35,19 @@ export const testimonials: Testimonial[] = [
     published: true,
   },
   {
-    // Editorial note (NOD-198): the archived review opened with "Carolina,
-    // you are the best!" — it originally praised Carolina by name. The name
-    // was replaced with "Jonah Stevens" at the client's direction
-    // (2026-07-29); every other word is unchanged apart from the same
-    // punctuation/spacing cleanup applied to the first testimonial.
+    // Editorial note (NOD-198): the archived review originally named
+    // Carolina — it opened with "Carolina, you are the best!" and later read
+    // "You are a real estate queen". Two client-directed edits (2026-07-29):
+    //   1. "Carolina" replaced with "Jonah Stevens".
+    //   2. "real estate queen" changed to "real estate expert" to keep the
+    //      wording consistent with that approved attribution.
+    // Every other word is unchanged apart from the same punctuation/spacing
+    // cleanup applied to the first testimonial.
     id: "yasmina-m",
     name: "Yasmina M.",
     initials: "YM",
     quote:
-      "Jonah Stevens, you are the best! Thank you so much for helping me find my dream home! I know I was anxious at first, but you were always there and guided me every step of the way, “trust the process” and “you're in the best hands you can be in” haha you were right, you never let me down. You are a real estate queen and always knew how to navigate the system! My daughter even loves you. Keep up the great work and thank you again — for everything!",
+      "Jonah Stevens, you are the best! Thank you so much for helping me find my dream home! I know I was anxious at first, but you were always there and guided me every step of the way, “trust the process” and “you're in the best hands you can be in” haha you were right, you never let me down. You are a real estate expert and always knew how to navigate the system! My daughter even loves you. Keep up the great work and thank you again — for everything!",
     published: true,
   },
 ];
