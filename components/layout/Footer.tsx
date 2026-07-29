@@ -100,15 +100,15 @@ export default function Footer() {
             <p className="text-neutral-500">
               <span className="font-semibold text-brand-ink">Contact Us</span>{" "}
               <a
-                href="mailto:jonah@nodevision.ai"
+                href="mailto:Info@royalhomesolutionsinc.com"
                 className="transition-colors hover:text-brand-ink"
               >
-                jonah@nodevision.ai
+                Info@royalhomesolutionsinc.com
               </a>
             </p>
             <p className="text-neutral-500">
-              <span className="font-semibold text-brand-ink">Location</span> San
-              Francisco, CA
+              <span className="font-semibold text-brand-ink">Location</span>{" "}
+              Florida
             </p>
           </div>
         </div>
