@@ -15,9 +15,9 @@ const suggestions = [
     description: "Get a free cash offer on your property.",
   },
   {
-    href: "/property",
-    label: "Properties we buy",
-    description: "The types and conditions we purchase.",
+    href: "/buy-a-home",
+    label: "Buy a home",
+    description: "Renovated homes we own and offer for sale.",
   },
   {
     href: "/agent",

@@ -1,18 +1,21 @@
-import type { SellerLeadSubmission } from "@/lib/leads";
+import type { BuyerInterestSubmission } from "@/lib/buyerInterest";
 import { escapeHtml } from "@/lib/html";
 
 /**
- * HTML email bodies for the seller lead flow.
+ * HTML email bodies for the buyer-interest flow.
  *
- * Written as inline-styled tables rather than modern CSS — Outlook and Gmail
- * strip <style> blocks, flexbox and grid.
+ * Inline-styled tables rather than modern CSS — Outlook and Gmail strip
+ * <style> blocks, flexbox and grid. Same construction as `leadEmails.ts`.
+ *
+ * The internal subject is prefixed "Buyer enquiry" so it is unmistakable
+ * against the "New seller lead" notifications in the same inbox.
  */
 
 const BRAND_INK = "#0D0D0D";
 const BRAND_YELLOW = "#F5CE3E";
 const BRAND_GREEN = "#22A24B";
 
-/** One label/value row in the lead details table. */
+/** One label/value row in the enquiry details table. */
 function detailRow(label: string, value: string): string {
   return `
     <tr>
@@ -39,27 +42,30 @@ function shell(inner: string): string {
 }
 
 /** Internal notification sent to the Royal Home Solutions inbox. */
-export function buildInternalEmail(lead: SellerLeadSubmission): {
+export function buildBuyerInternalEmail(enquiry: BuyerInterestSubmission): {
   subject: string;
   html: string;
   text: string;
 } {
-  const fullName = `${lead.firstName} ${lead.lastName}`.trim();
+  const fullName = `${enquiry.firstName} ${enquiry.lastName}`.trim();
 
   const rows = [
     detailRow("Name", fullName),
-    detailRow("Phone", lead.phone),
-    detailRow("Email", lead.email),
-    detailRow("Property address", lead.propertyAddress),
-    detailRow("Timeline", lead.timeline),
-    lead.message ? detailRow("Message", lead.message) : "",
-    detailRow("Source", lead.source ?? "website"),
+    detailRow("Phone", enquiry.phone),
+    detailRow("Email", enquiry.email),
+    detailRow("Price range", enquiry.priceRange),
+    detailRow("Timeline", enquiry.timeline),
+    enquiry.interestedProperty
+      ? detailRow("Interested in", enquiry.interestedProperty)
+      : "",
+    enquiry.message ? detailRow("Message", enquiry.message) : "",
+    detailRow("Source", enquiry.source ?? "website"),
   ].join("");
 
   const html = shell(`
     <tr>
       <td style="background-color:${BRAND_INK};padding:24px 32px;">
-        <p style="margin:0;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:${BRAND_YELLOW};font-weight:700;">New Seller Lead</p>
+        <p style="margin:0;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:${BRAND_YELLOW};font-weight:700;">Buyer Enquiry</p>
         <h1 style="margin:8px 0 0;font-size:22px;color:#ffffff;font-weight:600;">${escapeHtml(fullName)}</h1>
       </td>
     </tr>
@@ -69,38 +75,41 @@ export function buildInternalEmail(lead: SellerLeadSubmission): {
         <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:24px;">
           <tr>
             <td style="background-color:${BRAND_YELLOW};border-radius:999px;">
-              <a href="tel:${encodeURIComponent(lead.phone.replace(/\D/g, ""))}" style="display:inline-block;padding:12px 24px;font-size:14px;font-weight:700;color:${BRAND_INK};text-decoration:none;">Call ${escapeHtml(lead.firstName)}</a>
+              <a href="tel:${encodeURIComponent(enquiry.phone.replace(/\D/g, ""))}" style="display:inline-block;padding:12px 24px;font-size:14px;font-weight:700;color:${BRAND_INK};text-decoration:none;">Call ${escapeHtml(enquiry.firstName)}</a>
             </td>
           </tr>
         </table>
         <p style="margin:20px 0 0;font-size:13px;color:#888888;line-height:1.5;">
-          Reply directly to this email to reach ${escapeHtml(lead.firstName)} — the reply-to address is already set to their inbox.
+          This is a <strong>buyer</strong> enquiry from the Buy a Home page — someone looking to purchase, not sell. Reply directly to reach ${escapeHtml(enquiry.firstName)}.
         </p>
       </td>
     </tr>`);
 
   const text = [
-    `New seller lead: ${fullName}`,
+    `Buyer enquiry: ${fullName}`,
     ``,
-    `Phone: ${lead.phone}`,
-    `Email: ${lead.email}`,
-    `Property address: ${lead.propertyAddress}`,
-    `Timeline: ${lead.timeline}`,
-    lead.message ? `Message: ${lead.message}` : null,
-    `Source: ${lead.source ?? "website"}`,
+    `Phone: ${enquiry.phone}`,
+    `Email: ${enquiry.email}`,
+    `Price range: ${enquiry.priceRange}`,
+    `Timeline: ${enquiry.timeline}`,
+    enquiry.interestedProperty
+      ? `Interested in: ${enquiry.interestedProperty}`
+      : null,
+    enquiry.message ? `Message: ${enquiry.message}` : null,
+    `Source: ${enquiry.source ?? "website"}`,
   ]
     .filter((line) => line !== null)
     .join("\n");
 
   return {
-    subject: `New seller lead — ${fullName}, ${lead.propertyAddress}`,
+    subject: `Buyer enquiry — ${fullName}, ${enquiry.priceRange}`,
     html,
     text,
   };
 }
 
-/** Confirmation sent back to the seller so they know the form landed. */
-export function buildSellerConfirmationEmail(lead: SellerLeadSubmission): {
+/** Confirmation sent back to the buyer so they know the enquiry landed. */
+export function buildBuyerConfirmationEmail(enquiry: BuyerInterestSubmission): {
   subject: string;
   html: string;
   text: string;
@@ -113,20 +122,24 @@ export function buildSellerConfirmationEmail(lead: SellerLeadSubmission): {
     </tr>
     <tr>
       <td style="padding:32px;">
-        <p style="margin:0 0 16px;font-size:16px;color:${BRAND_INK};line-height:1.6;">Hi ${escapeHtml(lead.firstName)},</p>
+        <p style="margin:0 0 16px;font-size:16px;color:${BRAND_INK};line-height:1.6;">Hi ${escapeHtml(enquiry.firstName)},</p>
         <p style="margin:0 0 16px;font-size:15px;color:#444444;line-height:1.7;">
-          Thanks for reaching out about <strong style="color:${BRAND_INK};">${escapeHtml(lead.propertyAddress)}</strong>. We've received your details and a member of our team will be in touch shortly with your free, no-obligation home review.
+          Thanks for your interest in buying a home from Royal Home Solutions. We've received your details and a member of our team will be in touch.
         </p>
         <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.7;">
-          There's nothing else you need to do right now — just reply to this email if anything changes or you'd like to add more detail about the property.
+          We buy houses, renovate them, and sell a limited number of move-in-ready homes — so our inventory is small and changes over time. We'll let you know what's available and what's coming.
         </p>
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#fafafa;border-left:3px solid ${BRAND_GREEN};border-radius:6px;">
           <tr>
             <td style="padding:16px 20px;">
               <p style="margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#888888;font-weight:700;">What you told us</p>
               <p style="margin:0;font-size:14px;color:#444444;line-height:1.6;">
-                Property: ${escapeHtml(lead.propertyAddress)}<br/>
-                Timeline: ${escapeHtml(lead.timeline)}
+                Price range: ${escapeHtml(enquiry.priceRange)}<br/>
+                Timeline: ${escapeHtml(enquiry.timeline)}${
+                  enquiry.interestedProperty
+                    ? `<br/>Interested in: ${escapeHtml(enquiry.interestedProperty)}`
+                    : ""
+                }
               </p>
             </td>
           </tr>
@@ -139,28 +152,33 @@ export function buildSellerConfirmationEmail(lead: SellerLeadSubmission): {
     <tr>
       <td style="padding:20px 32px;background-color:#fafafa;">
         <p style="margin:0;font-size:12px;color:#999999;line-height:1.5;">
-          You're receiving this because you submitted a home review request on royalhomesolutions.com. We never share your information.
+          You're receiving this because you enquired about buying a home on royalhomesolutions.com. We never share your information.
         </p>
       </td>
     </tr>`);
 
   const text = [
-    `Hi ${lead.firstName},`,
+    `Hi ${enquiry.firstName},`,
     ``,
-    `Thanks for reaching out about ${lead.propertyAddress}. We've received your details and a member of our team will be in touch shortly with your free, no-obligation home review.`,
+    `Thanks for your interest in buying a home from Royal Home Solutions. We've received your details and a member of our team will be in touch.`,
     ``,
-    `There's nothing else you need to do right now — just reply to this email if anything changes.`,
+    `We buy houses, renovate them, and sell a limited number of move-in-ready homes — so our inventory is small and changes over time. We'll let you know what's available and what's coming.`,
     ``,
     `What you told us:`,
-    `Property: ${lead.propertyAddress}`,
-    `Timeline: ${lead.timeline}`,
+    `Price range: ${enquiry.priceRange}`,
+    `Timeline: ${enquiry.timeline}`,
+    enquiry.interestedProperty
+      ? `Interested in: ${enquiry.interestedProperty}`
+      : null,
     ``,
     `Talk soon,`,
     `The Royal Home Solutions Team`,
-  ].join("\n");
+  ]
+    .filter((line) => line !== null)
+    .join("\n");
 
   return {
-    subject: "We've received your home review request",
+    subject: "We've received your enquiry",
     html,
     text,
   };

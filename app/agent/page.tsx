@@ -110,7 +110,7 @@ export default function AgentPage() {
                 >
                   Get My Free Cash Offer
                 </Button>
-                <Button href="/property" variant="ghost">
+                <Button href="/sell-your-home" variant="ghost">
                   See what we buy
                 </Button>
               </div>

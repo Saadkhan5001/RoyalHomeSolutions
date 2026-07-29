@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const navLinks = [
   { label: "Home", href: "/#home" },
   { label: "How It Works", href: "/#process" },
-  { label: "Properties We Buy", href: "/property" },
+  { label: "Buy a Home", href: "/buy-a-home" },
   { label: "Sell Your Home", href: "/sell-your-home" },
   { label: "About", href: "/agent" },
   { label: "Contact", href: "/#contact" },

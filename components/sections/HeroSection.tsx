@@ -40,17 +40,20 @@ export default function HeroSection() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="max-w-3xl"
         >
-          {/* Trust badge. Deliberately face- and rating-free: the previous
-              treatment used stock portraits as "happy clients" with an
-              invented 5/5 rating (removed in NOD-198). The claims below are
-              backed by the site's own stated model — direct purchase, no
-              fees or commissions. */}
-          <div className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm">
-            <BadgeCheck
-              className="h-5 w-5 text-brand-yellow"
-              aria-hidden="true"
-            />
-            <p className="text-xs font-medium text-white/90 sm:text-sm">
+          {/* Trust badge — original layout, spacing and circular-medallion
+              treatment, restored without the stock "happy client" portraits
+              or the invented 5/5 star rating (both removed in NOD-198). The
+              medallion keeps the h-9 w-9 / border-2 border-white/80 styling
+              the avatars used; the wording states only what the site's own
+              model supports. */}
+          <div className="mb-7 flex items-center gap-3">
+            <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border-2 border-white/80 bg-white/10 backdrop-blur-sm">
+              <BadgeCheck
+                className="h-5 w-5 text-brand-yellow"
+                aria-hidden="true"
+              />
+            </span>
+            <p className="text-xs font-medium text-white/90">
               Trusted by local homeowners · No fees or commissions
             </p>
           </div>

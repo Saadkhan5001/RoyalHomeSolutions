@@ -15,7 +15,7 @@ import {
 const landingsLinks = [
   { label: "Homepage", href: "/#home" },
   { label: "How It Works", href: "/#process" },
-  { label: "Properties We Buy", href: "/property" },
+  { label: "Buy a Home", href: "/buy-a-home" },
   { label: "About Us", href: "/agent" },
   { label: "Contact", href: "/#contact" },
 ];

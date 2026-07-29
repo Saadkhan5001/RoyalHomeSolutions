@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 /**
- * What Royal Home Solutions buys, for the /property page.
+ * What Royal Home Solutions buys, shown on /sell-your-home.
  *
  * Deliberately criteria rather than listings — the company buys houses, it does
  * not sell them, so there is no inventory to show. Same reasoning as
