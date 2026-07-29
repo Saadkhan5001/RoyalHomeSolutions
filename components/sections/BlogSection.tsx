@@ -34,7 +34,7 @@ export default function BlogSection() {
         <div className="mt-12 grid gap-6 lg:mt-16 lg:grid-cols-3">
           {blogPosts.map((post, i) => (
             <motion.div
-              key={post.id}
+              key={post.slug}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}

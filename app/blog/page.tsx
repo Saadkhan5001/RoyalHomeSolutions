@@ -29,21 +29,16 @@ export default function BlogPage() {
 
         <section className="bg-white py-20 lg:py-28">
           <div className="mx-auto max-w-8xl px-6 lg:px-10">
-            {/*
-              Cards are not links: `data/blog.ts` holds titles and metadata but
-              no article bodies, so there is nothing to route to yet. Add a
-              `/blog/[slug]` route once posts have content — wrapping these in
-              dead links now would be worse than leaving them static.
-            */}
+            {/* Every card links to a real, complete article at
+                /blog/[slug] — there are no placeholder entries. */}
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {blogPosts.map((post) => (
-                <BlogCard key={post.id} post={post} />
+                <BlogCard key={post.slug} post={post} />
               ))}
             </div>
 
             <p className="mt-14 text-center text-sm text-neutral-500">
-              More guides are on the way. Have a question we haven&apos;t
-              covered?{" "}
+              Have a question we haven&apos;t covered?{" "}
               <a
                 href="/sell-your-home#seller-form"
                 className="font-semibold text-brand-ink underline underline-offset-4 hover:no-underline"
