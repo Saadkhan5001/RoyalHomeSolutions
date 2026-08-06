@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { faqs } from "@/data/faqs";
@@ -27,11 +27,24 @@ import { cn } from "@/lib/utils";
  * Multiple panels may be open at once. Closing one to open another loses the
  * reader's place, and there is no layout reason to force it here.
  *
+ * ── Why the reveal is CSS and not a height animation ──────────────────────
+ * An earlier version animated height 0 → auto with framer-motion. That has a
+ * bad failure mode: the panel mounts and `aria-expanded` flips to true, but if
+ * the animation never advances the answer stays at zero height. Assistive
+ * technology is then told the disclosure is open while nothing is visible —
+ * the two sources of truth disagree.
+ *
+ * Height is no longer animated at all. The panel takes its natural height the
+ * moment it mounts, and only opacity/translate are animated, via the `reveal`
+ * keyframe in tailwind.config.ts. That keyframe has no fill-mode, so the
+ * resting state is "visible": if the animation is skipped for any reason the
+ * content still shows. `motion-reduce:animate-none` opts reduced-motion users
+ * out of the animation entirely and they see the answer immediately.
+ *
  * The full list also renders on /faq as a plain <dl>. That page keeps the
  * FAQPage JSON-LD; it is deliberately not duplicated here (see app/page.tsx).
  */
 export default function FAQSection() {
-  const reduceMotion = useReducedMotion();
   const [openIds, setOpenIds] = useState<string[]>([]);
 
   const toggle = (id: string) =>
@@ -126,12 +139,11 @@ export default function FAQSection() {
                       >
                         <Plus
                           className={cn(
-                            "h-4 w-4",
-                            // Rotating the plus into an ×. Skipped entirely
-                            // under reduced motion — the color change above
-                            // still signals state.
-                            !reduceMotion &&
-                              "transition-transform duration-300",
+                            // Rotating the plus into an ×. The transition is
+                            // dropped under reduced motion; the rotation and
+                            // the color change above still signal state, so
+                            // nothing depends on the animation running.
+                            "h-4 w-4 transition-transform duration-300 motion-reduce:transition-none",
                             isOpen && "rotate-45",
                           )}
                         />
@@ -139,29 +151,20 @@ export default function FAQSection() {
                     </button>
                   </dt>
 
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.dd
-                        id={panelId}
-                        role="region"
-                        aria-labelledby={buttonId}
-                        initial={
-                          reduceMotion ? false : { height: 0, opacity: 0 }
-                        }
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={reduceMotion ? undefined : { height: 0, opacity: 0 }}
-                        transition={
-                          reduceMotion
-                            ? { duration: 0 }
-                            : { duration: 0.28, ease: "easeOut" }
-                        }
-                      >
-                        <p className="px-6 pb-6 text-base leading-relaxed text-neutral-600 sm:px-7 sm:pb-7">
-                          {faq.answer}
-                        </p>
-                      </motion.dd>
-                    )}
-                  </AnimatePresence>
+                  {/* Unmounted when closed, so collapsed answers are never
+                      announced or reachable by keyboard. */}
+                  {isOpen && (
+                    <dd
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={buttonId}
+                      className="animate-reveal motion-reduce:animate-none"
+                    >
+                      <p className="px-6 pb-6 text-base leading-relaxed text-neutral-600 sm:px-7 sm:pb-7">
+                        {faq.answer}
+                      </p>
+                    </dd>
+                  )}
                 </div>
               );
             })}

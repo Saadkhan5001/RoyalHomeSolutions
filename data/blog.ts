@@ -653,6 +653,109 @@ const articles: BlogPost[] = [
       },
     ],
   },
+
+  {
+    slug: "how-to-sell-an-inherited-property-in-south-florida",
+    title: "How to Sell an Inherited Property in South Florida",
+    description:
+      "The practical mechanics of selling an inherited home in South Florida: confirming who can sign, the costs that keep running, insurance and association obligations, and how a listing compares with a direct sale.",
+    publishedAt: "2026-08-07",
+    author: "Royal Home Solutions",
+    intro: [
+      "Selling an inherited house is mostly an administrative problem wearing an emotional one. The grief is real, and so is the pile of paperwork that arrives with it — and in South Florida a few local factors, insurance and association obligations especially, make the second part heavier than families expect.",
+      "This article walks through the practical sequence: establishing who can actually sell, understanding what the property costs while you decide, and comparing your routes to a sale. It is general information only — not legal, tax, or financial advice. Inheritance rules turn on details specific to each estate, and an estate attorney and a tax professional are the people qualified to advise on yours.",
+    ],
+    sections: [
+      {
+        heading: "Step one: confirm who has authority to sell",
+        body: [
+          "Nothing else can move until this is settled, and it is not the same question as who inherits.",
+          "Authority may rest with a personal representative named in a will, someone appointed by a court, a trustee if the property was held in trust, or with heirs directly. How the deed was titled matters enormously — a property held jointly with rights of survivorship, or with a recorded transfer-on-death arrangement, may pass very differently from one held in the deceased person's name alone.",
+          "Get this confirmed by an estate attorney early. It is a short conversation for someone who does this daily, and families that plan a sale for two months before discovering who is entitled to sign have lost two months.",
+        ],
+      },
+      {
+        heading: "Probate, in general terms",
+        body: [
+          "Probate is the court process that confirms authority to deal with a deceased person's assets. Whether an estate needs it, and which form applies, depends on the estate's size, how assets were titled, and whether there is a will. Florida has more than one procedural track, and which one fits is a legal determination — not something to decide from an article.",
+          "Two things are worth knowing regardless. First, a property can usually be marketed and put under contract while an estate is still being administered, though the closing itself waits on the authority being in place. Second, probate timelines vary widely and are largely outside anyone's control, which is why no responsible buyer will guarantee a closing date at the outset.",
+          "If someone tells you probate can be skipped or hurried in a way your attorney has not confirmed, treat that as a reason for caution.",
+        ],
+      },
+      {
+        heading: "When more than one person has inherited",
+        body: [
+          "Shared inheritance is where most of the friction lives, and it is rarely really about the house.",
+          "One sibling wants to keep a childhood home. One needs their share now. One lives nearby and has quietly absorbed every practical task. One wants it finished so they can stop thinking about it. All of these are reasonable, and they are hard to reconcile because they are not primarily financial positions.",
+          "What helps is separating the decisions and taking them one at a time: whether to sell, what happens to belongings, and how proceeds are divided — the last usually governed by the will or by law rather than by negotiation. Agree on one person to be the point of contact for anyone outside the family, and put decisions in writing as you go, even informally. Where agreement genuinely cannot be reached, that is a question for an attorney; there are established routes through it, and they beat an empty house costing everyone money for another year.",
+        ],
+      },
+      {
+        heading: "Condition and belongings",
+        body: [
+          "Inherited homes are often behind on maintenance, sometimes by years, because the person who lived there could no longer keep up with it. Deferred work tends to concentrate in exactly the places that matter most here: roofs, air conditioning, plumbing and anything touched by water.",
+          "Then there are the contents. Clearing a lifetime of belongings is the task that most often stalls everything else, and it takes far longer than anyone estimates. It is worth knowing that clearing is not required on every route — a traditional listing generally needs it because buyers have to see the house, while a direct sale usually does not. Families frequently take what matters to them and leave the rest.",
+          "If you do clear it, give yourself more time than seems necessary, and try not to do it alone.",
+        ],
+      },
+      {
+        heading: "The costs that keep running while you decide",
+        body: [
+          "An inherited property does not pause. These continue from the day it becomes your responsibility, and together they are usually what sets the timeline:",
+        ],
+        list: [
+          "Property taxes, which continue whether or not anyone lives there",
+          "Insurance — and note that a policy written for an occupied home may lapse or be reduced once the house sits empty, exactly when the risk is highest. Tell the insurer the situation and ask what is needed for a vacant property",
+          "Utilities, which generally need to stay on: air conditioning running at some level is what keeps humidity and mold in check in this climate",
+          "Any remaining mortgage, loan, lien or unpaid assessment secured against the property",
+          "HOA or condo association dues, which keep accruing — and for condominiums, any special assessment already levied or scheduled",
+          "Basic upkeep: lawn, roof debris, and enough presence that the property does not look abandoned",
+          "Travel and time, if the property is a flight away from whoever is responsible for it",
+        ],
+      },
+      {
+        heading: "If it is a condo or in an association",
+        body: [
+          "This is where South Florida differs most from other markets, and it catches families out.",
+          "For an association property, the buyer is taking on the association as much as the unit. Reserve levels, any assessment already approved, the status of required structural inspections on older buildings, and the association's own insurance all affect what a buyer will pay and, for financed buyers, whether a lender will approve the purchase at all.",
+          "Request the association's documents and an estoppel letter early — the estoppel states exactly what is owed on the unit at closing, and it is required for the sale anyway. Getting it early means the number does not surprise anyone late. Rules on approvals, leasing restrictions and transfer fees vary by association, so read them rather than assuming.",
+        ],
+      },
+      {
+        heading: "Listing it versus selling directly",
+        body: [
+          "Both are legitimate, and the right answer depends on the property and on what the family needs.",
+          "A traditional listing generally produces the highest gross price, and for a well-maintained home in a desirable location it is usually the right call. It assumes the house is cleared, presentable and accessible for showings, that someone can carry it while it sits, and that a financed buyer can get insurance and an appraisal to line up. It also assumes the family can absorb the costs of the sale at closing.",
+          "A direct sale trades some of that price for the removal of nearly all of it: no clearing, no repairs, no showings, no buyer financing to collapse. What you give up is the premium a prepared, marketed home can attract.",
+          "Compare them properly. Not the direct offer against a listing price, but the direct offer against what the estate would realistically net after clearing, repairs, months of carrying costs, association dues and the costs of the sale — adjusted for the chance a deal falls through and it starts again. If you want a figure to hold against those numbers, you can [tell us about the property](/sell-your-home) and there is no obligation attached to receiving one.",
+        ],
+      },
+      {
+        heading: "Questions to ask before accepting any offer",
+        body: [
+          "These apply to any buyer, us included. The answers tell you as much as the number:",
+        ],
+        list: [
+          "How did you arrive at this figure, and which parts relate to the property's condition?",
+          "Are you the actual buyer, or are you assigning this contract to someone else?",
+          "Is the offer conditional on anything — an inspection, financing, a partner's approval?",
+          "How will you handle the fact that the estate is still being administered?",
+          "What comes out of the amount the estate receives, and what are we responsible for at closing?",
+          "What could delay closing, and how would we hear about it?",
+          "What happens if we want a week to think, or decide not to proceed?",
+          "Will you put all of this in writing?",
+        ],
+      },
+      {
+        heading: "Talk to the right professionals",
+        body: [
+          "Some of this decision sits outside what any property buyer should be advising you on, and we would be wary of one that offered to.",
+          "An estate attorney handles authority to sell, probate, and how proceeds are divided. A tax professional handles the tax consequences of selling versus keeping or renting, which vary considerably by circumstance and are worth understanding before you decide rather than after. An insurance agent can tell you what coverage a vacant property needs now. And a local real estate agent can tell you what the house would realistically list for and how long that might take — a conversation worth having before accepting any direct offer, not after.",
+          "Royal Home Solutions purchases properties directly from owners, including inherited homes, in whatever condition they are in. We are the buyer in that transaction, not a listing agent, and there is no listing-agent commission involved. We cannot commit to purchasing every property, and we will not tell you a direct sale is right when a listing would serve the estate better. If you have a question and are not sure where it belongs, [get in touch](/contact) and we will tell you honestly whether it is one for us or for your attorney.",
+        ],
+      },
+    ],
+  },
 ];
 
 /**

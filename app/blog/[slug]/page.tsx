@@ -18,6 +18,44 @@ interface PageProps {
   params: { slug: string };
 }
 
+/**
+ * Internal links inside article prose, written as `[label](/path)`.
+ *
+ * Deliberately minimal — this is not a Markdown renderer and is not meant to
+ * become one. The pattern only accepts paths beginning with a single `/`, so
+ * article copy cannot introduce an off-site link, a `javascript:` URL, or a
+ * protocol-relative `//host` redirect. Anything that doesn't match is left as
+ * literal text rather than being silently dropped.
+ */
+const INTERNAL_LINK = /\[([^\]\n]+)\]\((\/[A-Za-z0-9\-._~/#?=&%]*)\)/g;
+
+function renderProse(text: string): React.ReactNode {
+  const nodes: React.ReactNode[] = [];
+  let cursor = 0;
+  let match: RegExpExecArray | null;
+
+  // Fresh index per call — the regex is module-scoped and /g is stateful.
+  INTERNAL_LINK.lastIndex = 0;
+
+  while ((match = INTERNAL_LINK.exec(text)) !== null) {
+    if (match.index > cursor) nodes.push(text.slice(cursor, match.index));
+    nodes.push(
+      <Link
+        key={`${match.index}-${match[2]}`}
+        href={match[2]}
+        className="font-semibold text-brand-ink underline underline-offset-4 hover:no-underline"
+      >
+        {match[1]}
+      </Link>,
+    );
+    cursor = match.index + match[0].length;
+  }
+
+  if (cursor === 0) return text;
+  if (cursor < text.length) nodes.push(text.slice(cursor));
+  return nodes;
+}
+
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
 }
@@ -109,7 +147,7 @@ export default function BlogArticlePage({ params }: PageProps) {
                 key={paragraph.slice(0, 40)}
                 className="mb-5 text-lg leading-relaxed text-neutral-700"
               >
-                {paragraph}
+                {renderProse(paragraph)}
               </p>
             ))}
 
@@ -123,7 +161,7 @@ export default function BlogArticlePage({ params }: PageProps) {
                     key={paragraph.slice(0, 40)}
                     className="mt-4 text-base leading-relaxed text-neutral-600"
                   >
-                    {paragraph}
+                    {renderProse(paragraph)}
                   </p>
                 ))}
                 {section.list && (
@@ -137,7 +175,7 @@ export default function BlogArticlePage({ params }: PageProps) {
                           className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand-yellow"
                           aria-hidden="true"
                         />
-                        {item}
+                        <span>{renderProse(item)}</span>
                       </li>
                     ))}
                   </ul>
