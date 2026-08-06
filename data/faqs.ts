@@ -1,5 +1,6 @@
 /**
- * Published FAQ content for `/faq`.
+ * Published FAQ content, rendered by the homepage `FAQSection` accordion and
+ * by the dedicated `/faq` page.
  *
  * Client-approved wording (NOD-201). Answers are rendered verbatim on the page
  * and reused to build the FAQPage JSON-LD, so the structured data can never
@@ -93,5 +94,34 @@ export const faqs: Faq[] = [
     question: "What happens after I submit my property information?",
     answer:
       "Royal Home Solutions reviews the details, contacts the seller to learn more, and determines whether the property may be a fit for a direct purchase. If appropriate, the next step is a no-obligation offer.",
+  },
+
+  // ── Added below: broader-audience questions. Same rules as above — no
+  // guaranteed purchase, timeline or figure, and no claim of zero total
+  // transaction costs. Kept deliberately short so the accordion stays scannable.
+  {
+    // Deliberately does NOT promise every property is bought. "Considered
+    // individually" is the same hedge used in `property-types` above.
+    id: "situations",
+    question:
+      "Do you work with inherited, vacant, occupied, or distressed properties?",
+    answer:
+      "Yes, these are among the situations we most often hear from. Inherited homes, long-vacant properties, rentals with tenants still in place, and houses that have fallen behind on upkeep are all reviewed individually. We cannot commit to purchasing every property, but the condition or situation on its own is not a reason to hold back from asking.",
+  },
+  {
+    // Buying side. Must not imply a large or permanent inventory — the /buy-a-home
+    // page makes the same "not a brokerage, not a listings site" distinction.
+    id: "buying",
+    question: "Can Royal Home Solutions help me buy a home?",
+    answer:
+      "Sometimes. We renovate select properties and offer a limited number of move-in-ready homes for sale, so our inventory is small and changes over time. We are not a brokerage and we do not list other people's properties. You can see what is currently available on the Buy a Home page, or ask us to let you know when something comes up.",
+  },
+  {
+    // Professional audience. No referral fee is mentioned — the archived site's
+    // "up to $1,000 for a referral" claim is still held back (see above).
+    id: "professionals",
+    question: "Do you work with realtors, investors, and other professionals?",
+    answer:
+      "Yes. Realtors with a client whose property may suit a direct sale, investors, contractors, and other professionals are welcome to get in touch through our contact page. Working arrangements depend on the situation and are discussed case by case.",
   },
 ];

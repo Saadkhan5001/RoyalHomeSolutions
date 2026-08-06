@@ -17,13 +17,17 @@ const landingsLinks = [
   { label: "How It Works", href: "/#process" },
   { label: "Buy a Home", href: "/buy-a-home" },
   { label: "About Us", href: "/agent" },
-  { label: "Contact", href: "/#contact" },
+  // General enquiries go to the dedicated page; the seller CTA below still
+  // points at /sell-your-home.
+  { label: "Contact", href: "/contact" },
 ];
 
 const informationLinks = [
   { label: "Sell Your Home", href: "/sell-your-home" },
   { label: "Get a Cash Offer", href: "/sell-your-home#seller-form" },
   { label: "Homeowners We Help", href: "/#situations" },
+  // The full FAQ page, not the homepage accordion — it carries the FAQPage
+  // structured data and every answer is expanded by default.
   { label: "FAQ", href: "/faq" },
   { label: "Homeowner Resources", href: "/blog" },
 ];
@@ -97,12 +101,13 @@ export default function Footer() {
                 className="h-20 w-auto"
               />
             </Link>
-            {/* Investor-positioning brand line (NOD-199). No service-area
-                claim until NOD-196 confirms it. */}
+            {/* Brand line, condensed from the approved homepage positioning.
+                Kept short deliberately — this sits in a max-w-sm column beside
+                the contact details. Service area now confirmed (NOD-196). */}
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-neutral-500">
-              Royal Home Solutions buys homes directly from owners, renovates
-              select properties, and resells a limited number of move-in-ready
-              homes.
+              A premier real estate company based in the Southeast, operating
+              nationwide with a primary focus on the East Coast. We buy,
+              renovate, and resell a limited number of move-in-ready homes.
             </p>
           </div>
 

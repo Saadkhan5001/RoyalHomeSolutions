@@ -31,8 +31,11 @@ export default function BlogSection() {
           </Button>
         </div>
 
+        {/* Capped at six so the three-column grid always fills whole rows —
+            a seventh card would sit alone. The full list is one click away via
+            "View all homeowner resources" below. */}
         <div className="mt-12 grid gap-6 lg:mt-16 lg:grid-cols-3">
-          {blogPosts.map((post, i) => (
+          {blogPosts.slice(0, 6).map((post, i) => (
             <motion.div
               key={post.slug}
               initial={{ opacity: 0, y: 20 }}

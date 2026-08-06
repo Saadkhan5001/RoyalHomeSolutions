@@ -9,7 +9,7 @@ import Button from "@/components/ui/Button";
 export const metadata: Metadata = pageMetadata({
   title: "About Royal Home Solutions, Inc.",
   description:
-    "Royal Home Solutions is a real estate investment company that buys homes directly from owners, renovates select properties, and offers a limited number of move-in-ready homes for sale.",
+    "Royal Home Solutions is a premier real estate company based in the Southeast, operating nationwide with a primary focus on the East Coast. We buy directly from homeowners, renovate select homes, and resell a limited number of move-in-ready properties.",
   // Route deliberately unchanged: /agent is already indexed with a canonical
   // and is linked as "About" from the nav and footer. Renaming it would break
   // those without adding value — this is a content update, not a move.
@@ -56,11 +56,15 @@ export default function AboutPage() {
             <h1 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
               About Royal Home Solutions
             </h1>
+            {/* Shorter form of the approved homepage positioning — this hero is
+                width-constrained, so the two-paragraph version does not fit. */}
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/85 sm:text-lg">
-              Royal Home Solutions is a real estate investment company that
-              works directly with property owners. We purchase select homes,
-              improve them through renovation, and later offer a limited number
-              of move-in-ready properties for sale.
+              Royal Home Solutions is a premier real estate company based in the
+              Southeast, operating nationwide with a primary focus on the East
+              Coast. We purchase properties directly from homeowners, renovate
+              select homes, and resell a limited number of move-in-ready
+              properties — all with a focus on clear communication, professional
+              service, and treating every client with respect.
             </p>
           </div>
         </section>

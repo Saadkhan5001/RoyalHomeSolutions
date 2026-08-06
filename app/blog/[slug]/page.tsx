@@ -166,6 +166,16 @@ export default function BlogArticlePage({ params }: PageProps) {
                   View Current Homes
                 </Button>
               </div>
+              <p className="mt-6 text-sm text-neutral-500">
+                Not selling? You can{" "}
+                <Link
+                  href="/contact"
+                  className="font-semibold text-brand-ink underline underline-offset-4 hover:no-underline"
+                >
+                  ask us anything
+                </Link>{" "}
+                — buyers, realtors and partners are all welcome.
+              </p>
             </div>
           </div>
         </article>

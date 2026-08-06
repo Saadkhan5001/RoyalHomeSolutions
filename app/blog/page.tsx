@@ -10,7 +10,7 @@ import { blogPosts } from "@/data/blog";
 export const metadata: Metadata = pageMetadata({
   title: "Homeowner Resources — Royal Home Solutions, Inc.",
   description:
-    "Practical guides for homeowners weighing a sale: selling a house that needs repairs, what to know before accepting a cash offer, and handling an inherited property.",
+    "Practical guides for homeowners weighing a sale: what happens after you request a cash offer, selling a house that needs major repairs, handling an inherited property, and how investors evaluate and renovate homes.",
   path: "/blog",
 });
 

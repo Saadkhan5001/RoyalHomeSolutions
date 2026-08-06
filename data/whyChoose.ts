@@ -67,7 +67,7 @@ export interface GalleryImage {
 }
 
 /**
- * All five slides are real Royal Home Solutions photos — no stock imagery.
+ * All six slides are real Royal Home Solutions photos — no stock imagery.
  * Ordered so the looping track alternates on-site portraits with work shots
  * rather than clustering two of a kind (including across the loop seam).
  * Files live in /public/Assets/Images (spaces URL-encoded).
@@ -97,5 +97,10 @@ export const galleryImages: GalleryImage[] = [
     id: "closing-paperwork",
     src: "/Assets/Images/Jonah%20Stevens%203.jpeg",
     alt: "Royal Home Solutions reviewing and signing closing paperwork with a homeowner",
+  },
+  {
+    id: "property-photo-8",
+    src: "/Assets/Images/Jonah%20Stevens%208.jpg",
+    alt: "Royal Home Solutions property photo with Jonah Stevens",
   },
 ];

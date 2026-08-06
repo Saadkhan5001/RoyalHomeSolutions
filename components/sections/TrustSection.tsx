@@ -21,7 +21,7 @@ export default function TrustSection() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="text-3xl font-semibold leading-tight tracking-tight text-brand-ink sm:text-4xl lg:text-5xl"
           >
-            Built on trust. Focused on homeowners.
+            Real Estate Solutions Built Around People and Properties
           </motion.h2>
 
           <motion.div
@@ -30,17 +30,31 @@ export default function TrustSection() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
           >
-            {/* Investor positioning (NOD-199), from the archived About/FAQ
-                copy. The licensed-agent referral sentence is intentionally
-                omitted until Jonah confirms it is still current. */}
+            {/* Company-level positioning, approved by Jonah. Broadened from the
+                previous investor-only framing (NOD-199) so the description also
+                reads sensibly to buyers, realtors and partners — not just
+                sellers. The service area is stated here for the first time:
+                Southeast-based, nationwide, East Coast focus (this is the
+                confirmation NOD-196 was waiting on).
+
+                The "we are the buyer, not your listing agent" line that used to
+                sit here was dropped with the rest of the old paragraph. That
+                distinction still appears where a seller actually needs it — the
+                FAQ, the /agent positioning cards and /sell-your-home. */}
             <p className="text-base leading-relaxed text-neutral-600 sm:text-lg">
-              Royal Home Solutions is a real estate investment company that
-              buys homes directly from owners. In a direct purchase, we are
-              the buyer — not your listing agent — so there are no agent
-              commissions or listing fees. We invest in renovating select
-              properties and later resell a limited number of move-in-ready
-              homes. Our mission is to improve the quality of housing, one
-              property and one neighborhood at a time.
+              Royal Home Solutions is a premier real estate company based in the
+              Southeast, serving homeowners and communities nationwide with a
+              primary focus on the East Coast. We purchase properties directly
+              from homeowners, renovate select homes, and resell a limited
+              number of move-in-ready properties.
+            </p>
+            <p className="mt-5 text-base leading-relaxed text-neutral-600 sm:text-lg">
+              Our goal is to make every real estate experience clear,
+              professional, and straightforward. Whether a homeowner is looking
+              for a direct and convenient way to sell, a buyer is searching for
+              their next home, or a partner is exploring an opportunity to work
+              with us, we approach every relationship with care, transparency,
+              and respect.
             </p>
 
             <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">

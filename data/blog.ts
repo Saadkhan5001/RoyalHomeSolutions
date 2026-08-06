@@ -1,7 +1,7 @@
 /**
  * Blog articles.
  *
- * All four articles are ORIGINAL work written for Royal Home Solutions and
+ * All six articles are ORIGINAL work written for Royal Home Solutions and
  * aimed at homeowners and buyers.
  *
  * ⚠️ Background, so this is never undone by mistake: the previous Royal Home
@@ -21,6 +21,32 @@
  *   - Author is "Royal Home Solutions" unless the client confirms in writing
  *     that a named person wrote and approved the piece.
  *   - Reading time is computed from the real word count — never typed by hand.
+ *
+ * ─────────────────────────────────────────────────────────────────────────
+ * ADDING A POST (the intended cadence is one or two a month)
+ *
+ *   1. Append a `BlogPost` object to `articles` below. Only `publishedAt`
+ *      controls ordering — `blogPosts` sorts newest-first, so there is no
+ *      array position to get right and nothing else to touch.
+ *   2. Everything else follows automatically: the /blog index, the homepage
+ *      section, `generateStaticParams`, the route metadata and the Article
+ *      JSON-LD all read from this file. No new route or component is needed.
+ *   3. Reading time is derived from the text, so long posts cannot advertise
+ *      a short read.
+ *
+ * There is deliberately no scheduling: a future `publishedAt` still renders
+ * immediately, because the site is statically built and nothing re-runs on a
+ * date boundary. To hold a finished draft back, keep it out of the array until
+ * it should go live.
+ *
+ * WHERE A CMS WOULD PLUG IN
+ * `getPost()` and `blogPosts` are the only two things the rest of the app
+ * imports. Swapping this file for a CMS (Sanity, Contentful, a headless
+ * WordPress, MDX files on disk) means re-implementing those two exports
+ * against the new source and keeping the `BlogPost` shape — no consumer
+ * changes. Scheduled publishing would then come from the CMS plus ISR
+ * (`export const revalidate`) on the blog routes.
+ * ─────────────────────────────────────────────────────────────────────────
  */
 
 export interface BlogSection {
@@ -44,7 +70,11 @@ export interface BlogPost {
   sections: BlogSection[];
 }
 
-export const blogPosts: BlogPost[] = [
+/**
+ * Articles in the order they were written. Do not read this directly —
+ * `blogPosts` below is the sorted, exported view.
+ */
+const articles: BlogPost[] = [
   {
     slug: "what-happens-after-you-request-a-cash-offer",
     title: "What Happens After You Request a Cash Offer for Your Home?",
@@ -347,7 +377,296 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+
+  {
+    slug: "selling-a-house-that-needs-major-repairs",
+    title: "Selling a House That Needs Major Repairs",
+    description:
+      "What to do when a house needs more work than you can fund: finding out what the repairs actually are, comparing a prepared listing against an as-is sale, and deciding honestly which route fits your situation.",
+    publishedAt: "2026-08-06",
+    author: "Royal Home Solutions",
+    intro: [
+      "Plenty of homeowners reach the same point. The house needs work — a roof, a system that has failed, damage that has been left too long — and the money to fix it is not there, or the energy to manage it is not there, or both. Meanwhile every month the problem gets slightly worse and slightly more expensive.",
+      "This article is about what your options actually are in that situation, and how to compare them without guessing. It is not an argument for selling directly. For some houses that is clearly the right move, and for others it clearly is not.",
+    ],
+    sections: [
+      {
+        heading: "What \"needs repairs\" actually means",
+        body: [
+          "The phrase covers an enormous range, and the range is the whole point. A house with a dated kitchen and worn carpet is in a completely different position from a house with a failing roof and water in the walls.",
+          "The useful division is between work that is cosmetic and work that is structural or systemic. Cosmetic work — paint, flooring, fixtures, tired but functional kitchens — is predictable to price and rarely stops a sale. Structural and systems work — roof, foundation, plumbing, electrical, HVAC, water damage — is harder to price, harder to fund, and much more likely to affect whether a buyer can get a mortgage on the property at all.",
+          "If your house only needs cosmetic work, you have more options than you may think, and a traditional listing deserves serious consideration. The rest of this article is mostly about the other category.",
+        ],
+      },
+      {
+        heading: "Find out what the work really is before deciding anything",
+        body: [
+          "The most common mistake is deciding what to do based on a guess about the cost. Homeowners routinely overestimate some repairs and badly underestimate others, and both errors lead to bad decisions.",
+          "Getting two or three written estimates from licensed contractors costs you nothing but time, and it converts an anxiety into a number. Even if you never do the work, that number is what lets you compare your options properly. A home inspection is also worth considering — it is the same thing a buyer's inspector would do, and finding out now what they would find later puts you in a stronger position either way.",
+          "Be specific about what you are asking for. An estimate to replace a roof is straightforward. An estimate to address water damage is not, because nobody can scope it fully until they open things up. If a contractor cannot tell you what is behind a wall, that uncertainty is real, and it is worth knowing about before you commit to a plan that assumes the best case.",
+        ],
+      },
+      {
+        heading: "The funding problem",
+        body: [
+          "Knowing what the work costs is only half of it. The other half is whether you can pay for it, and when.",
+          "Contractors on significant jobs generally want money before and during the work, not after the house sells. That timing is what makes major repairs impossible for a lot of homeowners — not the total figure, but the fact that it is needed now, from savings that are already committed elsewhere.",
+          "There are financing routes that exist for this, and whether any of them make sense for you is a question for a lender or a financial professional rather than for us. What we can say plainly is that the timing problem is real and extremely common, and that it is not a sign of having done anything wrong.",
+        ],
+      },
+      {
+        heading: "What listing a house that needs work actually involves",
+        body: [
+          "A traditional listing assumes a prepared house. That assumption is worth making explicit, because it is where the costs hide.",
+          "Preparing means completing the repairs, cleaning, often painting, sometimes staging, and then keeping the house in showable condition for as long as it takes to sell. It means being available for showings, which is harder if you have already moved, if tenants are in place, or if the house is a distance away. And it means carrying the property — taxes, insurance, utilities, any mortgage — for the entire period it sits on the market.",
+          "There is also the disclosure side. Sellers are generally required to disclose known material defects, and the rules vary by state. A significant known problem does not disappear because the house is listed; it becomes something a buyer's inspector finds, and it typically returns as a price renegotiation or a request that the work be done before closing.",
+        ],
+      },
+      {
+        heading: "Listing as-is with an agent is a third option",
+        body: [
+          "The choice is often framed as repair-and-list versus sell-direct. There is a middle route that gets overlooked: listing the house as-is with a traditional agent.",
+          "This can work well when the property is structurally sound but dated, when the area attracts buyers willing to take on a project, or when the price is set realistically for the condition from the start. A good agent will tell you honestly whether your house is a candidate, and it costs nothing to ask one.",
+          "Its limits are worth knowing too. The pool of buyers shrinks, because financing gets harder as condition worsens — some loan types will not close on a house with an active roof leak or unsafe wiring. Showings still happen, so the house still has to be accessible. The sale can still fall through at inspection or appraisal. And the commission and carrying costs still apply while it sits.",
+          "Ask two or three agents what they would list your house for as it stands, how long they would expect it to take, and what they would net you after costs. Do that before accepting any direct offer, not after.",
+        ],
+      },
+      {
+        heading: "Comparing the routes honestly",
+        body: [
+          "The comparison people usually make is the wrong one. A direct offer for the house as it stands is not comparable to a listing price for the house as it would be after repairs. Those are two different houses.",
+          "The honest comparison is between what you would receive from a direct sale, and what you would realistically be left with after listing — which means the eventual sale price minus the repair costs, minus the months of carrying the property, minus the costs of the sale itself, and adjusted for the risk that the work uncovers something worse than expected.",
+          "Run that comparison properly and one of two things happens. Either the listing route still comes out clearly ahead, in which case you should list, or the gap narrows to the point where the difference is mostly about how much disruption and risk you want to take on. Both outcomes are useful, and both are better than deciding on instinct.",
+        ],
+      },
+      {
+        heading: "The repairs that change the decision most",
+        body: [
+          "In our experience these are the issues that most often push a house toward an as-is sale, mainly because they are expensive, hard to scope, or affect a buyer's ability to finance the purchase:",
+        ],
+        list: [
+          "A roof at or past the end of its life, particularly where water has already got in",
+          "Foundation movement, or structural damage of any kind",
+          "Failed or unsafe electrical systems, including outdated wiring a lender may object to",
+          "Significant plumbing failures, and any long-running water intrusion or mold",
+          "Fire or storm damage that was never fully repaired",
+          "A property that needs to be substantially cleared out before anyone could view it",
+        ],
+      },
+      {
+        heading: "What you do not need to do before contacting anyone",
+        body: [
+          "This is worth stating directly, because a surprising number of homeowners delay asking for months out of embarrassment about the state of a house.",
+          "You do not need to repair anything, clean anything, clear anything out, or make the property presentable before asking what your options are. A house full of belongings, a house mid-renovation, a house that has stood empty for years — these are ordinary to anyone who buys property directly, and they are not a reason to put off a conversation.",
+          "You also do not need to have decided anything. Finding out what a house is worth in its current condition is information, not a commitment.",
+        ],
+      },
+      {
+        heading: "How this works with Royal Home Solutions",
+        body: [
+          "We purchase properties directly from homeowners in the condition they are in, which means the repair work becomes ours rather than yours. Some of those properties are renovated and later offered as move-in-ready homes.",
+          "When we make an offer on a house needing significant work, the figure reflects the condition, the work we expect it to need, the uncertainty in scoping that work, and the costs of holding and transacting. We would rather walk you through that reasoning than hand over a number without one.",
+          "And if the honest answer is that your house would do better prepared and listed, we would rather say so. A homeowner who sells directly when they did not need to has not been well served, whatever the transaction looked like on paper.",
+        ],
+      },
+    ],
+  },
+
+  {
+    slug: "selling-an-inherited-property",
+    title: "Selling an Inherited Property: What Families Should Know",
+    description:
+      "Inheriting a house comes with decisions nobody prepares for. Who has authority to sell, the costs that continue while you decide, handling belongings, and how families navigate it when more than one person has inherited.",
+    publishedAt: "2026-08-06",
+    author: "Royal Home Solutions",
+    intro: [
+      "Inheriting a property is rarely a windfall in the way people imagine. It usually arrives alongside grief, at a moment when nobody has the appetite for administration, and it comes with a set of decisions that most families have never had to make before.",
+      "This article covers the practical shape of that situation — what tends to need resolving, what continues costing money while you decide, and how families commonly approach it. It is deliberately not legal or tax guidance. Inheritance rules differ by state and by circumstance, and the professionals who handle this properly are estate attorneys and tax advisers. What follows is context, so the conversations you have with them are easier.",
+    ],
+    sections: [
+      {
+        heading: "First: who actually has authority to sell",
+        body: [
+          "Before anything else can happen, it has to be clear who is legally entitled to sell the property. This is the step that most often surprises families, because it is not the same as who inherits it.",
+          "Depending on how the estate was arranged, authority may sit with an executor named in a will, an administrator appointed by a court, a trustee, or with heirs directly. Whether the estate needs to go through probate — and how long that takes — depends on your state, the value of the estate, and how the property was titled.",
+          "This is the part to take to an estate attorney early rather than late. Not because it is necessarily complicated, but because everything else depends on the answer, and a family that spends two months planning a sale before discovering who is entitled to sign has lost two months.",
+        ],
+      },
+      {
+        heading: "The costs that continue while you decide",
+        body: [
+          "An inherited house does not pause while a family works out what to do with it. This is the practical pressure that most often drives the timing of a decision:",
+        ],
+        list: [
+          "Property taxes, which continue regardless of whether anyone lives there",
+          "Insurance, which usually needs to change once the property is unoccupied",
+          "Utilities, which generally need to stay on to prevent freezing, damp and deterioration",
+          "Any remaining mortgage, loan or lien secured against the property",
+          "Basic upkeep — lawn, gutters, and enough presence that the house does not look abandoned",
+          "Travel, if the property is in a different city or state from the people responsible for it",
+        ],
+      },
+      {
+        heading: "Insurance on an empty house is its own issue",
+        body: [
+          "This one catches families out regularly, so it is worth flagging on its own.",
+          "Most standard homeowners policies are written on the assumption that somebody lives in the house. Once a property has been unoccupied for a period — often measured in weeks rather than months — coverage can be reduced or lapse entirely, exactly when the risks of an empty property are highest.",
+          "Call the insurer and tell them the situation. There are policies written specifically for vacant properties. Whether you need one is a question for the insurer, but discovering the gap after a burst pipe is considerably worse than asking now.",
+        ],
+      },
+      {
+        heading: "When more than one person has inherited",
+        body: [
+          "Shared inheritance is where most of the difficulty lives, and it is rarely about the house.",
+          "Siblings often want genuinely different things, for reasons that are all legitimate. One wants to keep a childhood home. One needs their share of the money. One lives nearby and has absorbed all the practical work while the others have not. One wants it dealt with quickly so they can stop thinking about it. These are not unreasonable positions, and they are hard to reconcile because they are not really about property.",
+          "What tends to help is separating the decisions. Whether to sell is one question. What to do with belongings is another. How to divide proceeds is a third, and it is usually governed by the will or by state law rather than by negotiation. Families that treat these as one large argument tend to stall; families that resolve them one at a time tend to get through it.",
+          "Where agreement genuinely cannot be reached, that is a question for an attorney. There are established routes through it, and they are better than a stalemate that leaves an empty house costing everyone money for another year.",
+        ],
+      },
+      {
+        heading: "Clearing out a lifetime of belongings",
+        body: [
+          "This is frequently the hardest part, and it has almost nothing to do with the transaction.",
+          "Sorting through a parent's home is emotionally heavy work, and it takes far longer than anyone estimates. It is also the task that most often stalls everything else — the house cannot be shown, cannot be prepared, and sometimes cannot be properly assessed until it is done.",
+          "It is worth knowing that clearing the property is not a prerequisite for every route. A traditional listing generally requires it, because buyers need to see the house. A direct sale usually does not — we assess properties with belongings still in them regularly, and families often take what matters to them and leave the rest.",
+          "If you do clear it, give yourself more time than seems necessary, and do not do it alone if you can avoid it.",
+        ],
+      },
+      {
+        heading: "Keep it, rent it, or sell it",
+        body: [
+          "All three are legitimate, and the right answer depends on things only your family knows.",
+          "Keeping it makes sense when someone wants to live there and the property is in reasonable condition. Renting it can work, but it is worth being honest that becoming a landlord is a job, and doing it remotely, on a house that may need work, while an estate is being settled, is a demanding way to start.",
+          "Selling makes sense when nobody wants to live in it, the ongoing costs are a burden, the property needs work the family cannot fund, or when the people involved simply want the matter closed. There is no obligation to keep a house out of sentiment, and there is nothing wrong with deciding you would rather not carry it.",
+          "There are tax consequences to each of these routes, and they vary considerably by circumstance. That is a conversation for a tax professional before you decide, not after.",
+        ],
+      },
+      {
+        heading: "What a direct sale looks like in this situation",
+        body: [
+          "For inherited properties specifically, the parts of a direct sale that families tend to find useful are the ones that remove work rather than the ones that involve speed.",
+          "There is no preparation, so nobody has to fund repairs on a house they never chose to own. There are no showings, which matters when the property is hours away or when the family has no appetite for strangers walking through it. And the house does not need to be cleared out first.",
+          "The timeline is a conversation rather than a promise. Estates move at the pace probate and title work allow, and anyone guaranteeing a specific closing date before either is resolved is describing a hope. In our experience families more often want a date they can plan around than the earliest possible one.",
+        ],
+      },
+      {
+        heading: "How Royal Home Solutions can and cannot help",
+        body: [
+          "We purchase properties directly from owners, including inherited properties, in whatever condition they are in. When we buy directly we are the buyer, not a listing agent, and there is no listing-agent commission in that transaction. Some of the homes we purchase are renovated and later offered as move-in-ready properties.",
+          "What we cannot do is act as your attorney or your tax adviser, and we would be wary of any property company that offered to. We can tell you what we would pay for a property as it stands and explain how we arrived at it. Questions about probate, authority to sell, how proceeds are divided, or what any of it means for your tax position belong with professionals who are qualified to answer them.",
+          "If it helps to have a figure in hand while the rest is being worked out, that is a reasonable thing to ask for, and it commits you to nothing.",
+        ],
+      },
+    ],
+  },
+
+  {
+    slug: "what-south-florida-homeowners-should-consider-before-selling",
+    title:
+      "What South Florida Homeowners Should Consider Before Selling a Property",
+    description:
+      "A practical checklist before you sell: getting clear on your own goal, assessing condition honestly, weighing a listing against a direct sale, and the questions worth asking before you accept anything.",
+    publishedAt: "2026-08-07",
+    author: "Royal Home Solutions",
+    intro: [
+      "Most advice about selling a house starts with how to sell. That is the second question. The first is what you actually need out of it — and homeowners who skip that step often end up optimising for something that was never their priority.",
+      "This article is a checklist to work through before you commit to a route. It is written with South Florida and East Coast homeowners in mind, where insurance, storm exposure and association rules shape the decision more than they do elsewhere. It is general information, not legal, tax or financial advice; the professionals named throughout are the ones qualified to advise on your specific situation.",
+    ],
+    sections: [
+      {
+        heading: "Start with your actual goal, not the sale price",
+        body: [
+          "Ask what would make this a good outcome, specifically. The honest answer is rarely just the highest number.",
+          "For some homeowners it genuinely is the net proceeds, and they have the time and money to pursue it. For others it is certainty — knowing the sale will close rather than fall through. For others it is timing, because a job starts, a lease begins, or a property has become a monthly cost they cannot keep carrying. For plenty it is simply being done with a house that has become a burden.",
+          "These lead to different decisions. A homeowner optimising for the highest price should almost certainly prepare the property and list it. A homeowner optimising for certainty and timing may reasonably trade some of that price for both. Neither is wrong, but pursuing one while believing you want the other is how people end up disappointed by an outcome they chose.",
+        ],
+      },
+      {
+        heading: "Assess the property's condition honestly",
+        body: [
+          "Condition drives more of the outcome than almost anything else, and it is the area where homeowners are least objective — you stop seeing the things you have lived alongside for years.",
+          "The practical fix is to get outside eyes on it. A pre-listing inspection tells you what a buyer's inspector would find, before it becomes a renegotiation. Written contractor estimates turn a vague worry into a number you can actually plan around. Both cost time rather than much money, and both put you in a stronger position on any route you choose.",
+          "In this region a few items carry disproportionate weight, because they affect whether a buyer can insure or finance the property at all:",
+        ],
+        list: [
+          "Roof age and condition — insurers pay close attention here, and an older roof can affect a buyer's ability to get coverage",
+          "Windows, shutters and other storm protection, and whether openings meet current requirements",
+          "Any history of water intrusion, and whether it was properly repaired or covered over",
+          "Electrical panels and wiring of a type insurers or lenders may question",
+          "For condos and HOA properties, the association's own condition — reserves, upcoming assessments and inspection status can matter as much as your unit",
+        ],
+      },
+      {
+        heading: "Understand what a traditional listing really asks of you",
+        body: [
+          "A listing is the right route for a lot of properties, and it usually produces the highest gross price. It is worth being clear-eyed about what it requires in exchange.",
+          "It assumes a prepared house: repairs completed, cleaned, often painted, sometimes staged, and kept showable for as long as it takes. It assumes you can carry the property meanwhile — taxes, insurance, utilities, any mortgage — for a period nobody can tell you in advance. And it assumes you can absorb the costs of the sale itself, including commissions, at closing.",
+          "There is also the buyer-financing variable. A sale that depends on a mortgage depends on an appraisal and an underwriter, and on the property being insurable at a price the buyer can carry. In markets where insurance costs have become a live part of buyers' calculations, that is a real source of deals falling through late.",
+        ],
+      },
+      {
+        heading: "Understand what a direct sale really offers",
+        body: [
+          "A direct sale to a company that buys properties removes most of that. No preparation, no showings, no buyer financing to fall through, and the repair work becomes the buyer's problem rather than yours.",
+          "What you give up is the premium a prepared, marketed house can attract from a retail buyer who has fallen in love with it. That premium is real, and any company suggesting otherwise is overselling.",
+          "The comparison that matters is not the direct offer against a listing price. It is the direct offer against what you would realistically be left with after listing — sale price, minus repairs, minus months of carrying costs, minus the costs of the sale, adjusted for the chance that a deal falls through and you start again. Run it properly and the answer is usually clear in one direction or the other.",
+        ],
+      },
+      {
+        heading: "Weigh timing and convenience as real value, not weakness",
+        body: [
+          "Homeowners often treat convenience as something they should be embarrassed to want. It is a legitimate thing to buy, and you buy it with price.",
+          "It is worth putting rough numbers on. What does another four months of carrying this property cost, in taxes, insurance, utilities and loan payments? What is your time worth across managing contractors, keeping a house showable, and coordinating around showings? If you have already moved, what does managing it from a distance cost in travel and stress?",
+          "Once those are on the page, the gap between a listing outcome and a direct offer usually looks different than it did as an abstract comparison — sometimes wider, sometimes much narrower. Either way you are deciding with information rather than instinct.",
+        ],
+      },
+      {
+        heading: "Questions worth asking before you accept any offer",
+        body: [
+          "These apply to anyone making you an offer, us included. The answers tell you as much as the number does:",
+        ],
+        list: [
+          "How did you arrive at this figure, and which parts relate to the property's condition?",
+          "Is this offer conditional on anything — an inspection, financing, a partner's approval?",
+          "Are you the buyer, or are you assigning this contract to someone else?",
+          "What costs come out of the amount I would receive, and what am I responsible for at closing?",
+          "What could delay closing, and how would I be told?",
+          "What happens if I want a week to think about it, or if I say no?",
+          "Will you put all of this in writing?",
+        ],
+      },
+      {
+        heading: "Be wary of guaranteed outcomes",
+        body: [
+          "Some claims should lower your confidence in whoever is making them, not raise it.",
+          "Nobody can guarantee a closing date before a title search is done — title issues are common, usually resolvable, and the most frequent reason a date moves. Nobody can guarantee a specific figure before seeing the property. An offer that expires in hours exists to stop you comparing it against anything else. And a number that shifts each time you ask how it was calculated was not calculated.",
+          "A genuine offer survives you thinking about it overnight, showing it to a family member, and asking an agent what they would list the house for. Anyone discouraging you from doing those things is telling you something useful about themselves.",
+        ],
+      },
+      {
+        heading: "Where to get advice we cannot give",
+        body: [
+          "Some of this decision sits outside what any property buyer should be advising you on, and we would be wary of one that offered to.",
+          "Questions about tax consequences belong with a tax professional. Questions about title, probate, divorce, liens or what you are obliged to disclose belong with an attorney. Questions about insurability and what coverage would cost a future buyer belong with an insurance agent. Questions about what your house would realistically list for, and how long that might take, are worth asking a local agent — including before you accept a direct offer.",
+          "Royal Home Solutions purchases properties directly from homeowners, renovates select homes, and resells a limited number of move-in-ready properties. When we make an offer we would rather explain the reasoning behind it than present a number without one — and if a listing would genuinely serve you better, we would rather say so than have you find out afterwards.",
+        ],
+      },
+    ],
+  },
 ];
+
+/**
+ * Newest first, everywhere the blog is rendered — the homepage section, the
+ * /blog index and the static params all read this. Sorting by date rather than
+ * hand-ordering the array means a new article only needs a correct
+ * `publishedAt` to land in the right place.
+ *
+ * Array.prototype.sort is stable, so posts sharing a date keep the authoring
+ * order above rather than shuffling between builds.
+ */
+export const blogPosts: BlogPost[] = [...articles].sort(
+  (a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt),
+);
 
 /** Words per minute used for the reading-time estimate. */
 const WORDS_PER_MINUTE = 225;

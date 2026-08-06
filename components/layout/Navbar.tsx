@@ -8,13 +8,19 @@ import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 // Homepage anchors are page-absolute (/#...) so they work from any route.
+// One list drives both the desktop bar and the mobile menu, so they cannot
+// drift apart.
 const navLinks = [
   { label: "Home", href: "/#home" },
   { label: "How It Works", href: "/#process" },
   { label: "Buy a Home", href: "/buy-a-home" },
   { label: "Sell Your Home", href: "/sell-your-home" },
+  { label: "FAQ", href: "/#faq" },
+  { label: "Resources", href: "/blog" },
   { label: "About", href: "/agent" },
-  { label: "Contact", href: "/#contact" },
+  // General enquiries now have a real page. The seller CTA button below is
+  // unchanged and still goes to /sell-your-home#seller-form.
+  { label: "Contact", href: "/contact" },
 ];
 
 // Three explicit header states keep the logic unambiguous (no mixed booleans).
@@ -175,8 +181,11 @@ export default function Navbar() {
       {/* Mobile menu */}
       <div
         className={cn(
+          // max-height is the animated property, so it has to clear the real
+          // content height or the last links are clipped. Sized for the current
+          // eight links plus the CTA — raise it again if more are added.
           "overflow-hidden bg-brand-ink/95 backdrop-blur-md transition-[max-height] duration-300 lg:hidden",
-          open ? "max-h-[28rem]" : "max-h-0"
+          open ? "max-h-[36rem]" : "max-h-0"
         )}
       >
         <ul className="flex flex-col gap-1 px-6 pb-6 pt-2">
