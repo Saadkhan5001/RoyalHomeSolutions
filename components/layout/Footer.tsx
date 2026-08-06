@@ -110,10 +110,10 @@ export default function Footer() {
             <p className="text-neutral-500">
               <span className="font-semibold text-brand-ink">Contact Us</span>{" "}
               <a
-                href="mailto:Info@royalhomesolutionsinc.com"
+                href="mailto:jonah@royalhomesolutions.com"
                 className="transition-colors hover:text-brand-ink"
               >
-                Info@royalhomesolutionsinc.com
+                jonah@royalhomesolutions.com
               </a>
             </p>
             <p className="text-neutral-500">

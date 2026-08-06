@@ -197,10 +197,8 @@ Intentional fixes applied (consistent with the "fix obvious errors" request):
 - The copy rebrand is complete — no "Havenly" references remain in any component
   or `data/*.ts` file. The mentions elsewhere in this document are describing the
   template the site was rebuilt from, not live copy.
-- The footer contact address is `Info@royalhomesolutionsinc.com` and the stated
-  location is **Florida**. Note the mail domain is `royalhomesolutionsinc.com`
-  (with `inc`), which is *not* the site's own domain — confirm that mailbox
-  receives before relying on it. `leads@royalhomesolutions.com` is a *sending*
+- The footer contact address is `jonah@royalhomesolutions.com` and the stated
+  location is **Florida**. `leads@royalhomesolutions.com` is a *sending*
   identity in Resend with Receiving deliberately disabled, so it is not a valid
   destination for footer contact mail.
 
