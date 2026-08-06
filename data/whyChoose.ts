@@ -66,30 +66,36 @@ export interface GalleryImage {
   alt: string;
 }
 
+/**
+ * All five slides are real Royal Home Solutions photos — no stock imagery.
+ * Ordered so the looping track alternates on-site portraits with work shots
+ * rather than clustering two of a kind (including across the loop seam).
+ * Files live in /public/Assets/Images (spaces URL-encoded).
+ */
 export const galleryImages: GalleryImage[] = [
   {
-    id: "g1",
-    src: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=1200&q=85",
-    alt: "Bright modern family home with a manicured lawn",
+    id: "neighborhood-visit",
+    src: "/Assets/Images/Jonah%20Stevens%207.jpeg",
+    alt: "Jonah Stevens standing on a residential street in front of a two-storey home",
   },
   {
-    id: "g2",
-    src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=85",
-    alt: "Classic white two-storey home with a welcoming porch",
+    id: "renovation-walkthrough",
+    src: "/Assets/Images/Jonah%20Stevens%202.jpeg",
+    alt: "Jonah Stevens walking a home mid-renovation, with fresh paint and new flooring going in",
   },
   {
-    id: "g3",
-    src: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=85",
-    alt: "Contemporary home with a pool on a sunny day",
+    id: "property-visit",
+    src: "/Assets/Images/Jonah%20Stevens%206.jpeg",
+    alt: "Jonah Stevens outside a single-storey Florida home on a sunny day",
   },
   {
-    id: "g4",
-    src: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1200&q=85",
-    alt: "Modern home with large glass windows at dusk",
+    id: "contractor-handshake",
+    src: "/Assets/Images/Jonah%20Stevens%205.jpeg",
+    alt: "Jonah Stevens shaking hands with a contractor beside a newly installed washer and dryer",
   },
   {
-    id: "g5",
-    src: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?auto=format&fit=crop&w=1200&q=85",
-    alt: "Suburban house with a landscaped front yard",
+    id: "closing-paperwork",
+    src: "/Assets/Images/Jonah%20Stevens%203.jpeg",
+    alt: "Royal Home Solutions reviewing and signing closing paperwork with a homeowner",
   },
 ];
