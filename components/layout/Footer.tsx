@@ -11,6 +11,13 @@ import {
   Linkedin,
   Loader2,
 } from "lucide-react";
+import HoneypotField from "@/components/forms/HoneypotField";
+import TurnstileWidget from "@/components/forms/TurnstileWidget";
+import {
+  useFormProtection,
+  verificationMessage,
+} from "@/components/forms/useFormProtection";
+import { turnstileActions } from "@/lib/turnstileActions";
 
 const landingsLinks = [
   { label: "Homepage", href: "/#home" },
@@ -45,6 +52,14 @@ export default function Footer() {
     "idle" | "submitting" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const {
+    turnstileRef,
+    honeypot,
+    setHoneypot,
+    activate,
+    collect,
+    reset: resetProtection,
+  } = useFormProtection();
 
   const submitting = status === "submitting";
 
@@ -55,11 +70,24 @@ export default function Footer() {
     setStatus("submitting");
     setErrorMessage("");
 
+    // Honeypot value, fill duration and the Turnstile token. All three are
+    // re-checked server-side — this only gathers them. `collect()` already
+    // waited for a challenge in progress, so no token here means it either
+    // needs the visitor or couldn't load at all.
+    const { hasToken, verificationBlocked, ...protection } = await collect();
+
+    if (!hasToken) {
+      setErrorMessage(verificationMessage(verificationBlocked));
+      setStatus("error");
+      resetProtection();
+      return;
+    }
+
     try {
       const response = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, ...protection }),
       });
 
       if (!response.ok) {
@@ -79,6 +107,10 @@ export default function Footer() {
           : "We couldn't sign you up. Please try again.",
       );
       setStatus("error");
+    } finally {
+      // A Turnstile token is single-use either way — success or failure, the
+      // next submission needs a fresh one.
+      resetProtection();
     }
   };
 
@@ -173,10 +205,20 @@ export default function Footer() {
               homeowner resources and updates.
             </p>
 
-            <form onSubmit={handleSubmit} className="mt-5 flex max-w-sm gap-3">
+            <form
+              onSubmit={handleSubmit}
+              // Loads the Turnstile challenge on first interaction. The footer
+              // is on every page — loading a third-party script on every view
+              // for a field most visitors never touch is a bad trade.
+              onFocus={activate}
+              // Autofill can populate a field without ever firing focus.
+              onChange={activate}
+              className="relative mt-5 flex max-w-sm gap-3"
+            >
               <label htmlFor="newsletter-email" className="sr-only">
                 Email address
               </label>
+              <HoneypotField value={honeypot} onChange={setHoneypot} />
               <input
                 id="newsletter-email"
                 type="email"
@@ -200,6 +242,17 @@ export default function Footer() {
                 )}
               </button>
             </form>
+
+            {/* Outside the form: it is a flex row, and the widget renders
+                nothing at all unless Cloudflare wants a human check. The token
+                is read through the ref, not the form's fields. */}
+            <TurnstileWidget
+              ref={turnstileRef}
+              action={turnstileActions.newsletter}
+              theme="light"
+              className="mt-3 max-w-sm empty:hidden"
+            />
+
             {status === "success" && (
               <p className="mt-3 text-sm text-brand-green" role="status">
                 Thanks for subscribing!

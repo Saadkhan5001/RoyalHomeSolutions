@@ -2,13 +2,26 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { isValidEmail } from "@/lib/validation";
 import {
+  checkAndRecordAbuse,
   checkRateLimit,
   getClientIp,
   recordRateLimitHit,
 } from "@/lib/rateLimit";
+import {
+  MIN_ELAPSED_MS_SHORT_FORM,
+  readBoundedJson,
+  verifySubmission,
+} from "@/lib/botProtection";
+import { anonymizeIp, logFormRejected } from "@/lib/securityLog";
+import { turnstileActions } from "@/lib/turnstileActions";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const ROUTE = "newsletter";
+
+/** Coarse ceiling on total requests per IP per window. */
+const ABUSE_LIMIT = Number(process.env.NEWSLETTER_ABUSE_LIMIT ?? 30);
 
 /** Signups allowed per IP per window. Tighter than the lead form — one person
  * only ever needs one. */
@@ -49,11 +62,28 @@ export async function POST(request: Request) {
   }
 
   const ip = getClientIp(request);
-  const rateKey = `newsletter:${ip}`;
+  const ipPrefix = anonymizeIp(ip);
+
+  // Coarse ceiling: every request counts, so junk still costs something —
+  // but at 30/window it takes real hammering, not three bad payloads.
+  const abuse = checkAndRecordAbuse(ROUTE, ip, ABUSE_LIMIT, RATE_WINDOW_MS);
+  if (!abuse.allowed) {
+    logFormRejected("rate_limit", { route: ROUTE, ipPrefix });
+    return NextResponse.json(
+      { error: "You've already signed up. Please try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(abuse.retryAfterSeconds) },
+      },
+    );
+  }
+
+  // Tight ceiling, charged only for signups that actually go through.
+  const rateKey = `${ROUTE}:${ip}`;
   const limit = checkRateLimit(rateKey, RATE_LIMIT, RATE_WINDOW_MS);
 
   if (!limit.allowed) {
-    console.warn(`[newsletter] Rate limit hit for ${ip}.`);
+    logFormRejected("rate_limit", { route: ROUTE, ipPrefix });
     return NextResponse.json(
       { error: "You've already signed up. Please try again later." },
       {
@@ -63,17 +93,20 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  const parsed = await readBoundedJson(request);
+  if (!parsed.ok) {
+    logFormRejected(parsed.reason, { route: ROUTE, ipPrefix });
+    return NextResponse.json(
+      { error: "Invalid request body." },
+      { status: parsed.reason === "payload_too_large" ? 413 : 400 },
+    );
   }
 
-  const rawEmail = (body as Record<string, unknown> | null)?.email;
+  const rawEmail = parsed.body.email;
   const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : "";
 
   if (!email) {
+    logFormRejected("validation", { route: ROUTE, ipPrefix, errorCount: 1 });
     return NextResponse.json(
       { error: "Please enter your email address." },
       { status: 400 },
@@ -81,13 +114,28 @@ export async function POST(request: Request) {
   }
 
   if (!isValidEmail(email)) {
+    logFormRejected("validation", { route: ROUTE, ipPrefix, errorCount: 1 });
     return NextResponse.json(
       { error: "Please enter a valid email address." },
       { status: 400 },
     );
   }
 
-  // Counted only now that the request is valid, so typos don't cost quota.
+  // Honeypot → timing → Turnstile, verified server-side. Nothing below this
+  // line runs unless Cloudflare confirmed the token. The timing floor is lower
+  // than the lead forms': this is one field, and a genuine signup is quick.
+  const gate = await verifySubmission({
+    route: ROUTE,
+    request,
+    ip,
+    body: parsed.body,
+    action: turnstileActions.newsletter,
+    minElapsedMs: MIN_ELAPSED_MS_SHORT_FORM,
+  });
+
+  if (!gate.ok) return gate.response;
+
+  // Charged only now that the request is valid and human.
   recordRateLimitHit(rateKey, RATE_WINDOW_MS);
 
   try {

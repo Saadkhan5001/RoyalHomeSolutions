@@ -27,7 +27,10 @@ export interface ContactEnquiry {
 }
 
 export interface ContactSubmission extends ContactEnquiry {
-  /** Where the enquiry came from, e.g. "contact_page". */
+  /**
+   * Where the enquiry came from, e.g. "contact_page". Assigned by the route
+   * from `lib/formSources.ts` — never parsed out of the request body.
+   */
   source?: string;
   /** Server-stamped ISO timestamp, set in the API route. */
   submittedAt?: string;
@@ -100,7 +103,7 @@ export function validateContactEnquiry(body: unknown): ContactValidationResult {
     phone: asString(raw.phone),
     inquiryType: asString(raw.inquiryType),
     message: asString(raw.message),
-    source: asString(raw.source) || undefined,
+    // `source` is deliberately absent: the route owns it.
   };
 
   if (!enquiry.name) errors.push("Name is required.");

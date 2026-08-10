@@ -20,7 +20,10 @@ export interface SellerLead {
 
 /** A lead as it arrives at the API, with its capture point attached. */
 export interface SellerLeadSubmission extends SellerLead {
-  /** Where the lead came from, e.g. "sell_your_home_page". */
+  /**
+   * Where the lead came from, e.g. "sell_your_home_page". Assigned by the
+   * route from `lib/formSources.ts` — never parsed out of the request body.
+   */
   source?: string;
 }
 
@@ -73,7 +76,7 @@ export function validateSellerLead(body: unknown): ValidationResult {
     propertyAddress: asString(raw.propertyAddress),
     timeline: asString(raw.timeline),
     message: asString(raw.message),
-    source: asString(raw.source) || undefined,
+    // `source` is deliberately absent: the route owns it.
   };
 
   if (!lead.firstName) errors.push("First name is required.");

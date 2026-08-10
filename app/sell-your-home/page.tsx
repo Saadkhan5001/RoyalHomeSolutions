@@ -152,11 +152,7 @@ export default function SellYourHomePage() {
             </div>
 
             <div className="w-full lg:ml-auto lg:max-w-md">
-              <SellerLeadForm
-                id="seller-form"
-                variant="hero"
-                source="sell_your_home_page"
-              />
+              <SellerLeadForm id="seller-form" variant="hero" />
             </div>
           </div>
         </section>

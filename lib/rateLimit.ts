@@ -90,6 +90,36 @@ export function recordRateLimitHit(key: string, windowMs: number): void {
 }
 
 /**
+ * Coarse per-IP request ceiling, counted on every request that reaches a route.
+ *
+ * Deliberately separate from the per-route submission allowance, and much more
+ * generous. The two answer different questions:
+ *
+ *   - submission bucket (tight): "has this person already sent us five leads?"
+ *     Charged only for a valid, human submission, so a visitor fixing a typo —
+ *     or someone sharing an office/CGNAT address with a bot — never burns it.
+ *   - abuse bucket (loose): "is this address hammering us?" Charged for every
+ *     request, so malformed and bot-shaped traffic still costs something.
+ *
+ * Keeping them apart is the whole point: five bad requests from a shared IP
+ * must not lock out a real customer behind the same NAT, and with Turnstile as
+ * the primary control they no longer need to. Same in-memory store, no new
+ * infrastructure.
+ */
+export function checkAndRecordAbuse(
+  route: string,
+  ip: string,
+  limit: number,
+  windowMs: number,
+): RateLimitResult {
+  const key = `abuse:${route}:${ip}`;
+  const result = checkRateLimit(key, limit, windowMs);
+  // Recorded even for requests that go on to be rejected — that is the point.
+  if (result.allowed) recordRateLimitHit(key, windowMs);
+  return result;
+}
+
+/**
  * Best-effort client IP. Behind Vercel/most proxies the real client is the
  * first entry in `x-forwarded-for`; everything after it is proxy hops.
  */

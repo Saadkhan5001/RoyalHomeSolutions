@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { Lock, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import HoneypotField from "@/components/forms/HoneypotField";
+import TurnstileWidget from "@/components/forms/TurnstileWidget";
+import {
+  useFormProtection,
+  verificationMessage,
+} from "@/components/forms/useFormProtection";
 import { inquiryTypes, type ContactEnquiry } from "@/lib/contact";
+import { turnstileActions } from "@/lib/turnstileActions";
 import { cn } from "@/lib/utils";
 
 const emptyEnquiry: ContactEnquiry = {
@@ -28,8 +35,6 @@ interface GeneralContactFormProps {
   className?: string;
   /** Preselects the inquiry type, e.g. from `/contact?type=buying`. */
   defaultInquiryType?: string;
-  /** Attribution tag on the submitted payload. */
-  source?: string;
 }
 
 /**
@@ -51,7 +56,6 @@ export default function GeneralContactForm({
   id,
   className,
   defaultInquiryType = "",
-  source = "contact_page",
 }: GeneralContactFormProps) {
   const inputClasses = cn(
     "w-full min-w-0 rounded-xl border px-4 py-3 text-base outline-none transition-colors",
@@ -68,6 +72,14 @@ export default function GeneralContactForm({
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<string[]>([]);
+  const {
+    turnstileRef,
+    honeypot,
+    setHoneypot,
+    activate,
+    collect,
+    reset: resetProtection,
+  } = useFormProtection();
 
   const submitted = status === "success";
   const isSubmitting = status === "submitting";
@@ -89,11 +101,25 @@ export default function GeneralContactForm({
     setErrorMessage("");
     setFieldErrors([]);
 
+    // Honeypot value, fill duration and the Turnstile token. All three are
+    // re-checked server-side — this only gathers them. `collect()` already
+    // waited for a challenge in progress, so no token here means it either
+    // needs the visitor or couldn't load at all.
+    const { hasToken, verificationBlocked, ...protection } = await collect();
+
+    if (!hasToken) {
+      setErrorMessage(verificationMessage(verificationBlocked));
+      setStatus("error");
+      resetProtection();
+      return;
+    }
+
     try {
+      // No `source`: attribution is assigned by the route, not claimed here.
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, source }),
+        body: JSON.stringify({ ...data, ...protection }),
       });
 
       if (!response.ok) {
@@ -116,6 +142,10 @@ export default function GeneralContactForm({
           : "We couldn't send your message. Please try again.",
       );
       setStatus("error");
+    } finally {
+      // A Turnstile token is single-use either way — success or failure, the
+      // next submission needs a fresh one.
+      resetProtection();
     }
   };
 
@@ -157,7 +187,14 @@ export default function GeneralContactForm({
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
+        <form
+          onSubmit={handleSubmit}
+          // Loads the Turnstile challenge on first interaction rather than on
+          // page load, so it is ready by the time anyone reaches Submit.
+          onFocus={activate}
+          className="relative mt-6 space-y-4"
+          noValidate
+        >
           {status === "error" && errorMessage && (
             <div
               role="alert"
@@ -284,6 +321,19 @@ export default function GeneralContactForm({
               className={cn(inputClasses, "resize-none")}
             />
           </div>
+
+          <HoneypotField value={honeypot} onChange={setHoneypot} />
+
+          {/* Renders nothing unless Cloudflare decides a human check is needed.
+              Auto-activated: this is a conversion path, so the challenge is
+              warm before anyone can reach the button. */}
+          <TurnstileWidget
+            ref={turnstileRef}
+            action={turnstileActions.contact}
+            theme="light"
+            autoActivate
+            className="empty:hidden"
+          />
 
           <Button
             type="submit"

@@ -3,8 +3,15 @@
 import { useState } from "react";
 import { Lock, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import HoneypotField from "@/components/forms/HoneypotField";
+import TurnstileWidget from "@/components/forms/TurnstileWidget";
+import {
+  useFormProtection,
+  verificationMessage,
+} from "@/components/forms/useFormProtection";
 import { trackLead } from "@/lib/metaPixel";
 import { timelineOptions, type SellerLead } from "@/lib/leads";
+import { turnstileActions } from "@/lib/turnstileActions";
 import { cn } from "@/lib/utils";
 
 export type { SellerLead };
@@ -42,9 +49,6 @@ interface SellerLeadFormProps {
   submitLabel?: string;
   /** Small pill shown above the heading on the hero variant. */
   eyebrow?: string;
-  /** Where the lead came from, attached to the submitted payload for later
-   * attribution (e.g. "sell_your_home_page"). */
-  source?: string;
 }
 
 /** Per-variant class tokens so the markup stays single-source. */
@@ -108,7 +112,6 @@ export default function SellerLeadForm({
   subheading = "Share a few details and our team will contact you with the next step.",
   submitLabel = "Get My Free Cash Offer",
   eyebrow = "Free Cash Offer",
-  source,
 }: SellerLeadFormProps) {
   const s = variantStyles[variant];
   // text-base (16px) keeps iOS from auto-zooming on focus; roomy padding keeps
@@ -123,6 +126,14 @@ export default function SellerLeadForm({
     "idle" | "submitting" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const {
+    turnstileRef,
+    honeypot,
+    setHoneypot,
+    activate,
+    collect,
+    reset: resetProtection,
+  } = useFormProtection();
 
   const submitted = status === "success";
   const isSubmitting = status === "submitting";
@@ -143,8 +154,21 @@ export default function SellerLeadForm({
     setStatus("submitting");
     setErrorMessage("");
 
-    // `source` tags which page/entry point captured the lead for attribution.
-    const lead = { ...data, source };
+    // Honeypot value, fill duration and the Turnstile token. All three are
+    // re-checked server-side — this only gathers them. `collect()` already
+    // waited for a challenge in progress, so no token here means it either
+    // needs the visitor or couldn't load at all.
+    const { hasToken, verificationBlocked, ...protection } = await collect();
+
+    if (!hasToken) {
+      setErrorMessage(verificationMessage(verificationBlocked));
+      setStatus("error");
+      resetProtection();
+      return;
+    }
+
+    // No `source`: attribution is assigned by the route, not claimed here.
+    const lead = { ...data, ...protection };
 
     try {
       const response = await fetch("/api/seller-leads", {
@@ -153,27 +177,36 @@ export default function SellerLeadForm({
         body: JSON.stringify(lead),
       });
 
+      const body = await response.json().catch(() => null);
+
       if (!response.ok) {
-        const body = await response.json().catch(() => null);
         throw new Error(
           body?.error ?? "We couldn't submit your details. Please try again.",
         );
       }
 
       // Meta Pixel: standard Lead event, fired only once the submit succeeds.
+      // `delivered: false` marks the silent honeypot response — a 200 that
+      // created no lead. Counting that as a conversion would quietly corrupt
+      // the ad account's optimisation data.
       // TODO: Mirror this with the Conversions API (server-side) from the route
       // handler, using a shared event_id for deduplication.
-      trackLead();
+      if (body?.delivered !== false) trackLead();
 
       setStatus("success");
       setData(emptyLead);
     } catch (error) {
+      // Typed values stay in state so nothing needs retyping.
       setErrorMessage(
         error instanceof Error
           ? error.message
           : "We couldn't submit your details. Please try again.",
       );
       setStatus("error");
+    } finally {
+      // A Turnstile token is single-use either way — success or failure, the
+      // next submission needs a fresh one.
+      resetProtection();
     }
   };
 
@@ -225,7 +258,13 @@ export default function SellerLeadForm({
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="mt-6 space-y-3.5">
+        <form
+          onSubmit={handleSubmit}
+          // Loads the Turnstile challenge on first interaction rather than on
+          // page load, so it is ready by the time anyone reaches Submit.
+          onFocus={activate}
+          className="relative mt-6 space-y-3.5"
+        >
           {status === "error" && errorMessage && (
             <div
               role="alert"
@@ -376,6 +415,19 @@ export default function SellerLeadForm({
               className={cn(inputClasses, "resize-none")}
             />
           </div>
+
+          <HoneypotField value={honeypot} onChange={setHoneypot} />
+
+          {/* Renders nothing unless Cloudflare decides a human check is needed.
+              Auto-activated: this is the conversion path, so the challenge is
+              warm before anyone can reach the button. */}
+          <TurnstileWidget
+            ref={turnstileRef}
+            action={turnstileActions.sellerLead}
+            theme={variant === "hero" ? "dark" : "light"}
+            autoActivate
+            className="empty:hidden"
+          />
 
           <Button
             type="submit"

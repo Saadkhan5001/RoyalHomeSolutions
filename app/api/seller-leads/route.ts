@@ -7,17 +7,26 @@ import {
 } from "@/lib/leadEmails";
 import { appendLead } from "@/lib/leadStore";
 import {
+  checkAndRecordAbuse,
   checkRateLimit,
   getClientIp,
   recordRateLimitHit,
 } from "@/lib/rateLimit";
+import { readBoundedJson, verifySubmission } from "@/lib/botProtection";
+import { anonymizeIp, logFormRejected } from "@/lib/securityLog";
+import { turnstileActions } from "@/lib/turnstileActions";
+import { routeSources } from "@/lib/formSources";
 
 // Resend's SDK needs the Node runtime, and this route must never be cached.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** Submissions allowed per IP per window. Generous for a household, tight for a bot. */
+const ROUTE = "seller-leads";
+
+/** Successful submissions allowed per IP per window. Generous for a household. */
 const RATE_LIMIT = Number(process.env.LEAD_RATE_LIMIT ?? 5);
+/** Coarse ceiling on total requests per IP per window — see `checkAndRecordAbuse`. */
+const ABUSE_LIMIT = Number(process.env.LEAD_ABUSE_LIMIT ?? 30);
 const RATE_WINDOW_MS = Number(process.env.LEAD_RATE_WINDOW_MS ?? 10 * 60 * 1000);
 
 /**
@@ -46,11 +55,28 @@ export async function POST(request: Request) {
 
   // Checked before parsing so a flood costs us as little work as possible.
   const ip = getClientIp(request);
-  const rateKey = `seller-leads:${ip}`;
+  const ipPrefix = anonymizeIp(ip);
+
+  // Coarse ceiling: every request counts, so junk still costs something —
+  // but at 30/window it takes real hammering, not five bad payloads.
+  const abuse = checkAndRecordAbuse(ROUTE, ip, ABUSE_LIMIT, RATE_WINDOW_MS);
+  if (!abuse.allowed) {
+    logFormRejected("rate_limit", { route: ROUTE, ipPrefix });
+    return NextResponse.json(
+      {
+        error:
+          "You've submitted a few times already. Please wait a moment and try again, or call us directly.",
+      },
+      { status: 429, headers: { "Retry-After": String(abuse.retryAfterSeconds) } },
+    );
+  }
+
+  // Tight ceiling, charged only for leads that actually go through.
+  const rateKey = `${ROUTE}:${ip}`;
   const limit = checkRateLimit(rateKey, RATE_LIMIT, RATE_WINDOW_MS);
 
   if (!limit.allowed) {
-    console.warn(`[seller-leads] Rate limit hit for ${ip}.`);
+    logFormRejected("rate_limit", { route: ROUTE, ipPrefix });
     return NextResponse.json(
       {
         error:
@@ -60,28 +86,46 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
+  const parsed = await readBoundedJson(request);
+  if (!parsed.ok) {
+    logFormRejected(parsed.reason, { route: ROUTE, ipPrefix });
     return NextResponse.json(
       { error: "Invalid request body." },
-      { status: 400 },
+      { status: parsed.reason === "payload_too_large" ? 413 : 400 },
     );
   }
 
-  const result = validateSellerLead(body);
+  const result = validateSellerLead(parsed.body);
   if (!result.ok) {
+    logFormRejected("validation", {
+      route: ROUTE,
+      ipPrefix,
+      errorCount: result.errors.length,
+    });
     return NextResponse.json(
       { error: result.errors[0], errors: result.errors },
       { status: 400 },
     );
   }
 
-  const { lead } = result;
+  // Attribution is the server's to decide — this route is only ever reached
+  // from the Sell Your Home form, so nothing the caller sent is consulted.
+  const lead = { ...result.lead, source: routeSources.sellerLeads };
 
-  // Counted only now that the lead is valid, so a visitor correcting a typo
-  // doesn't burn their allowance on rejected attempts.
+  // Honeypot → timing → Turnstile, verified server-side against this route's
+  // own action. Nothing below this line runs unless Cloudflare confirmed it —
+  // no email, no stored lead.
+  const gate = await verifySubmission({
+    route: ROUTE,
+    request,
+    ip,
+    body: parsed.body,
+    action: turnstileActions.sellerLead,
+  });
+
+  if (!gate.ok) return gate.response;
+
+  // Charged only now that the lead is valid and human.
   recordRateLimitHit(rateKey, RATE_WINDOW_MS);
 
   const resend = new Resend(apiKey);

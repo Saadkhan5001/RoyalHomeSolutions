@@ -103,7 +103,6 @@ export default function BuyAHomePage() {
           <div className="mx-auto max-w-2xl px-6 lg:px-10">
             <BuyerInterestForm
               id="buyer-form"
-              source="buy_a_home_page"
               propertyOptions={availableHomes.map((home) => ({
                 id: home.id,
                 title: home.title,

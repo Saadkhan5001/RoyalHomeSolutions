@@ -26,7 +26,10 @@ export interface BuyerInterest {
 }
 
 export interface BuyerInterestSubmission extends BuyerInterest {
-  /** Where the enquiry came from, e.g. "buy_a_home_page". */
+  /**
+   * Where the enquiry came from, e.g. "buy_a_home_page". Assigned by the route
+   * from `lib/formSources.ts` — never parsed out of the request body.
+   */
   source?: string;
 }
 
@@ -87,7 +90,7 @@ export function validateBuyerInterest(body: unknown): BuyerValidationResult {
     timeline: asString(raw.timeline),
     interestedProperty: asString(raw.interestedProperty),
     message: asString(raw.message),
-    source: asString(raw.source) || undefined,
+    // `source` is deliberately absent: the route owns it.
   };
 
   if (!enquiry.firstName) errors.push("First name is required.");

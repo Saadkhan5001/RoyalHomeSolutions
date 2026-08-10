@@ -14,6 +14,8 @@ as of the latest update.
 | Responsive (mobile / tablet / desktop) | ✅ |
 | Lint (`next lint`) | ✅ No warnings or errors |
 | Production build (`next build`) | ✅ Compiles, 4/4 static pages prerendered |
+| Tests (`npm test`) | ✅ 105 passing (anti-bot protection) |
+| Form spam protection | ✅ Cloudflare Turnstile — **needs env vars set before deploy**, see §9d |
 | Deployment-ready (Vercel) | ✅ |
 
 The site is **feature-complete** for all screenshots provided so far. Remaining
@@ -41,9 +43,14 @@ npm run dev      # http://localhost:3000
 npm run build    # production build
 npm run start    # serve the production build
 npm run lint     # eslint
+npm test         # vitest — anti-bot protection suite
 ```
 
 Requires Node 18+ (developed on Node 24).
+
+Copy `.env.example` to `.env.local` before running the forms locally. It ships
+with Cloudflare's public **test** Turnstile keys so submissions work out of the
+box on a dev machine — see §9d before deploying.
 
 ---
 
@@ -366,6 +373,235 @@ Link wiring: the nav's **About** now points at `/agent` rather than the
 `/#...` anchors still resolve to real homepage sections (`#home`, `#process`,
 `#about`, `#situations`, `#blog`, `#contact`) and were left alone.
 
+## 9d. Anti-bot protection (form-spam incident)
+
+### Root cause
+
+Every public form posted JSON to an unauthenticated API route with **no bot
+challenge of any kind**. Validation confirmed the payload was *well-formed*, not
+that a *person* sent it: a name, a syntactically valid email, ten phone digits
+and a valid `timeline`/`priceRange` option are all trivial for a script to
+generate. The only obstacle was `lib/rateLimit.ts`, which is in-memory and
+therefore **per-instance on Vercel** — a bot rotating IPs or simply hitting
+different serverless instances never came close to the limit.
+
+Each accepted submission then did exactly what it was built to do: an internal
+notification to Jonah and a confirmation email to the bot-supplied address. The
+reported payloads carried `Source: buy_a_home_page`, which matches the internal
+email built in `lib/buyerEmails.ts` — so `/api/buyer-interest` was the entry
+point, but all four endpoints were equally open.
+
+Resend was never the source. It was the amplifier.
+
+### Protected forms and routes
+
+| Form | Page | Endpoint | Side effects behind the gate |
+| --- | --- | --- | --- |
+| `SellerLeadForm` | `/sell-your-home` | `POST /api/seller-leads` | internal email, `appendLead()`, seller confirmation, Meta Pixel `Lead` |
+| `BuyerInterestForm` | `/buy-a-home` | `POST /api/buyer-interest` | internal email, buyer confirmation |
+| `GeneralContactForm` | `/contact` | `POST /api/contact` | internal email, visitor confirmation |
+| Footer newsletter | every page | `POST /api/newsletter` | Resend audience `contacts.create` |
+
+### Processing order
+
+Every protected route now runs the same sequence, cheapest check first, and
+**nothing with a side effect happens until the last gate passes**:
+
+```
+rate limit → bounded body read → server validation
+           → honeypot → timing → Turnstile (server-side)
+           → business processing → internal email → confirmation email
+```
+
+### Turnstile flow (the primary control)
+
+1. The browser mounts `components/forms/TurnstileWidget.tsx`. The three lead
+   forms pass `autoActivate`, so the challenge is warm before anyone can reach
+   the submit button. The footer newsletter loads it on **first interaction**
+   instead — it sits on every page and should not cost every visitor a
+   third-party script for a field most of them never touch.
+2. The widget uses `appearance: "interaction-only"`, so it is invisible unless
+   Cloudflare actually wants a human check. No form was redesigned.
+3. On submit, `useFormProtection().collect()` **waits** for a challenge still in
+   progress (up to 8s) before giving up, so a fast typist is never told
+   verification is missing just because the script was still loading. If it
+   genuinely cannot produce a token, the form says which problem it is — the
+   check needs completing, or it could not load at all — and keeps every
+   entered value.
+4. `lib/botProtection.ts` → `lib/turnstile.ts` POSTs the token to Cloudflare's
+   siteverify endpoint with a 5s timeout and only then allows the route to
+   continue.
+
+**Three things are checked on the siteverify response, not one:**
+
+| Field | Why |
+| --- | --- |
+| `success` | The token is genuine and has not been used before |
+| `hostname` | The token was solved **on our site**. The site key is public, so anyone can embed the widget on their own page and farm genuinely-solved tokens; without this that works |
+| `action` | The token was minted **for this operation**. Without it, a token from the footer newsletter widget can be replayed against `/api/seller-leads` |
+
+Actions live in `lib/turnstileActions.ts` (`seller_lead`, `buyer_interest`,
+`contact`, `newsletter`) and are imported by both the widget and the route, so
+the two cannot drift. **The route decides which action it expects** — it is
+never read from the request body.
+
+Hostname and action binding are enforced whenever `NODE_ENV === "production"`.
+They are off elsewhere because Cloudflare's official test keys answer with a
+placeholder hostname and no action; `TURNSTILE_STRICT_BINDING` overrides either
+way, and `TURNSTILE_ALLOWED_HOSTNAMES` is how a Vercel preview deployment on
+`*.vercel.app` gets accepted.
+
+**Fails closed.** A missing token, an invalid token, a replayed token, a token
+from the wrong host or the wrong form, an unreachable Cloudflare, a timeout, or
+a missing `TURNSTILE_SECRET_KEY` all result in zero Resend calls and zero stored
+leads. A client-supplied boolean (`captchaPassed: true`) is meaningless — only
+Cloudflare's answer counts.
+
+### Attribution is server-owned
+
+`source` is a business value that lands in Jonah's inbox, and each route already
+knows its own answer, so the browser is not asked. `lib/formSources.ts` maps one
+route to one source and the route stamps it after validation. A `source` in the
+request body is ignored entirely.
+
+If a route ever legitimately serves several capture points, that is the moment
+to accept a client value again — and to validate it against a list. Until then,
+one route means one source. Email copy is unchanged: the same three values reach
+the same templates.
+
+### Honeypot and timing (free secondary signals)
+
+- `components/forms/HoneypotField.tsx` renders a decoy `companyWebsite` input,
+  positioned off-screen rather than `display:none` (simple bots skip fields the
+  browser reports as hidden). `aria-hidden`, `tabIndex={-1}` and
+  `autoComplete="off"` keep it away from screen readers, keyboard navigation and
+  password managers. Any value in it rejects the submission.
+
+  A honeypot hit answers **`200 {ok: true, delivered: false}`** — deliberately
+  indistinguishable from success, and the only check that behaves this way. A
+  400 would teach a bot that the hidden field is a trap and invite it to retry
+  without it; a filled honeypot is also never a recoverable human mistake, so
+  there is nobody to give an actionable error to. `delivered: false` is how the
+  browser knows to suppress the Meta Pixel `Lead` event — a fake success must
+  never be counted as a conversion. A bot posting straight to the API never
+  reads that field and learns nothing.
+
+  The trade-off: if a browser extension ever fills the honeypot for a real
+  person, they see success while nothing was sent. That is why the field is
+  hidden four different ways rather than one.
+- Submission timing is sent as `formElapsedMs`. Below 1200ms (500ms for the
+  single-field newsletter) the submission is rejected. It is client-supplied and
+  spoofable, so a **missing or nonsensical value is deliberately not a
+  rejection** — assistive tech, autofill and prefetched pages must not be
+  punished. Turnstile remains authoritative.
+- Origin/Referer mismatch is **logged as a signal only**, never used to
+  authorise anything; both headers are attacker-controlled.
+
+Timing and Turnstile failures return the same generic message so a script cannot
+learn which layer caught it.
+
+### Rate limiter — two buckets, still not the main control
+
+`lib/rateLimit.ts` keeps its original design: dependency-free, in-memory, 429 +
+`Retry-After`. It is a **secondary** defense. What changed is that it now keys
+two separate buckets, because one bucket cannot answer two different questions:
+
+| Bucket | Limit | Charged when | Question it answers |
+| --- | --- | --- | --- |
+| submission | 5 / 10 min (3 for newsletter) | only when a submission **succeeds** | "has this person already sent us five leads?" |
+| abuse | 30 / 10 min | **every** request that reaches the route | "is this address hammering us?" |
+
+This is the fix for a real hazard in the first pass, where bot-gate rejections
+consumed the same allowance as real submissions: five malformed requests from an
+office or mobile-carrier NAT would have locked out every legitimate customer
+behind that address. Now junk costs only the loose bucket, and a valid customer
+sharing an IP with a bot is still served. `tests/apiRoutes.test.ts` asserts
+exactly that — 10 honeypot hits followed by a genuine submission that succeeds.
+
+Validation failures still cost nothing on the submission bucket, so a visitor
+fixing a typo is never locked out of their first correct attempt.
+
+> ⚠️ On Vercel each serverless instance keeps its own counters, so both limits
+> are per-instance rather than global. They stop a naive script hammering one
+> connection; they do not stop a distributed flood. That is exactly why
+> Turnstile — not this — is the primary protection. **Do not** replace it with
+> Redis/Upstash: that introduces a paid dependency this project deliberately
+> avoids, and Turnstile already covers the gap.
+
+### Security logging
+
+`lib/securityLog.ts` emits one greppable line per decision:
+
+```
+form_rejected: honeypot            form_rejected: turnstile_missing
+form_rejected: too_fast            form_rejected: turnstile_failed
+form_rejected: validation          form_rejected: turnstile_unavailable
+form_rejected: rate_limit          form_rejected: turnstile_unconfigured
+form_rejected: payload_too_large   form_accepted
+```
+
+Never logged: the Resend key, the Turnstile secret, any Turnstile token (length
+only), or the visitor's name, email, phone or message.
+
+**IP addresses are anonymised before logging.** The limiter keys on the full
+address in memory because it has to; what gets *written down* is the network
+prefix only — `203.0.113.x`, or the /64 for IPv6, via `anonymizeIp()`. That
+still answers the operational question ("one source or many?") without retaining
+personal data in a log drain. A raw address is never logged.
+
+### Content Security Policy
+
+There is none — no `headers()` in `next.config.mjs`, no middleware, no
+`vercel.json`. Nothing blocks the Turnstile script today. **If a CSP is ever
+added**, it needs:
+
+```
+script-src  https://challenges.cloudflare.com
+frame-src   https://challenges.cloudflare.com
+connect-src https://challenges.cloudflare.com
+```
+
+### Environment variables
+
+| Variable | Where | Notes |
+| --- | --- | --- |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | browser | Public by design |
+| `TURNSTILE_SECRET_KEY` | server only | Never prefix with `NEXT_PUBLIC_`, never log |
+| `TURNSTILE_ALLOWED_HOSTNAMES` | server, optional | Defaults to the two royalhomesolutions.com hosts. Required for preview deploys |
+| `TURNSTILE_STRICT_BINDING` | server, optional | Defaults to on in production. Debugging only |
+| `TURNSTILE_TIMEOUT_MS` | server, optional | Defaults to 5000 |
+| `LEAD_ABUSE_LIMIT` / `NEWSLETTER_ABUSE_LIMIT` | server, optional | Coarse request ceiling, default 30 |
+
+Cloudflare Turnstile's **Free plan covers this entirely**. No paid service, no
+Redis/Upstash, no paid Vercel WAF rule was added.
+
+### Local development and testing
+
+`.env.example` ships Cloudflare's published test keys
+(`1x00000000000000000000AA` / `1x0000000000000000000000000000000AA`), which
+always pass — copy it to `.env.local` and the forms work immediately. They
+provide **no protection**, so they must never reach production.
+
+To watch a real challenge appear locally, swap in the "always challenges" site
+key `3x00000000000000000000FF`. To confirm the gate rejects, use the
+"always fails" secret `2x0000000000000000000000000000000AA`.
+
+`npm test` covers the whole matrix — valid submission sends email; missing,
+invalid, replayed, wrong-hostname, wrong-action and unverifiable tokens send
+nothing; honeypot, fast submission, invalid payload, oversized payload and
+rate-limited requests send nothing. The suite runs with binding enforcement
+**on**, so it exercises the same path production does rather than a lenient one.
+Cloudflare and Resend are both mocked; no test touches a real API.
+
+`tests/protectionContract.test.ts` is the guard rail for the future. A new
+`app/api/**/route.ts` that imports Resend or the lead store **fails the suite**
+unless it goes through `verifySubmission`, names an expected action, stamps its
+own `source`, and logs `ipPrefix` rather than a raw IP. A new form that posts to
+`/api/` fails unless it supplies a token, honeypot and timing, uses a shared
+action constant, and does not claim its own attribution.
+
+---
+
 ## 10. Key files to know
 
 - `app/page.tsx` — section order and composition.
@@ -373,3 +609,5 @@ Link wiring: the nav's **About** now points at `/agent` rather than the
 - `next.config.mjs` — image remote patterns.
 - `data/*.ts` — all editable content.
 - `components/ui/*` — shared primitives to reuse before writing new markup.
+- `lib/botProtection.ts` — the one gate every public form endpoint must pass
+  through. Start here before adding any new public endpoint (§9d).
